@@ -6,7 +6,7 @@ import plotly.graph_objects as go
 from utils.progress_tracker import ProgressTracker
 
 def run_class():
-    st.header("Clase 1: Introducción a la Ingeniería Financiera")
+    st.header("Clase 1: Introducción a las finanzas cuantitativas")
     
     # Progress tracking
     progress_tracker = st.session_state.progress_tracker
@@ -15,11 +15,11 @@ def run_class():
     tab1, tab2, tab3, tab4 = st.tabs(["Resumen", "Conceptos Clave", "Ejemplo Interactivo", "Conclusión"])
     
     with tab1:
-        st.subheader("¿Qué es la Ingeniería Financiera?")
+        st.subheader("¿Qué son las finanzas cuantitativas?")
         
         st.write("""
-        La Ingeniería Financiera es un campo multidisciplinario que involucra teoría financiera, métodos de ingeniería, 
-        herramientas matemáticas y programación práctica. Se enfoca en:
+        Las finanzas cuantitativas son un campo que utiliza modelos matemáticos y estadísticos para analizar y predecir el comportamiento de los mercados financieros. 
+        Se enfoca en:
         """)
         
         col1, col2 = st.columns(2)
@@ -39,7 +39,7 @@ def run_class():
             **Herramientas Utilizadas:**
             - Modelos Matemáticos
             - Análisis Estadístico
-            - Programación de Computadoras
+            - ALGO trading
             - Datos de Mercados Financieros
             - Métodos de Simulación
             """)
@@ -49,7 +49,7 @@ def run_class():
         course_data = {
             'Clase': [f'Clase {i}' for i in range(1, 11)],
             'Tema': [
-                'Introducción a la Ingeniería Financiera',
+                'Introducción a las finanzas cuantitativas',
                 'Valor del Dinero en el Tiempo',
                 'Valoración de Bonos',
                 'Valoración de Acciones',
@@ -86,8 +86,8 @@ def run_class():
                 
                 # Add simple examples for key concepts
                 if concept == "Valor del Dinero en el Tiempo":
-                    st.write("**Ejemplo:** $100 hoy vs $100 en un año")
-                    
+                    st.write("**Ejemplo:** 100USD hoy vs 100USD en un año")
+
                     col1, col2 = st.columns(2)
                     with col1:
                         rate = st.slider("Tasa de Interés (%)", 0, 20, 5, key="tvm_rate")
@@ -95,7 +95,7 @@ def run_class():
                         years = st.slider("Años", 1, 10, 1, key="tvm_years")
                     
                     future_val = 100 * (1 + rate/100) ** years
-                    st.write(f"$100 invertidos hoy al {rate}% por {years} año(s) = ${future_val:.2f}")
+                    st.write(f"100USD invertidos hoy al {rate}% por {years} año(s) = ${future_val:.2f}")
     
     with tab3:
         st.subheader("Ejemplo Interactivo: Visualización de Precios de Acciones")
@@ -111,7 +111,7 @@ def run_class():
             num_days = st.slider("Número de Días", 30, 365, 100)
         with col3:
             volatility = st.slider("Volatilidad Diaria (%)", 0.5, 5.0, 2.0)
-        
+
         if st.button("Generar Trayectoria del Precio"):
             # Generate random stock price path
             np.random.seed(42)  # For reproducibility
@@ -170,7 +170,7 @@ def run_class():
         
         with quiz_col1:
             q1 = st.radio(
-                "¿Cuál es el enfoque principal de la ingeniería financiera?",
+                "¿Cuál es el enfoque principal de las finanzas cuantitativas?",
                 ["Solo comercio de acciones", "Aplicar métodos matemáticos a las finanzas", "Operaciones bancarias", "Prácticas contables"],
                 key="q1"
             )
