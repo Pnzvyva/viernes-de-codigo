@@ -9,7 +9,7 @@ from utils.financial_functions import FinancialCalculations
 from utils.progress_tracker import ProgressTracker
 
 def run_class():
-    st.header("Clase 10: Temas Avanzados en Ingeniería Financiera")
+    st.header("Clase 10: Temas Avanzados en Finanzas Cuantitativas")
     
     progress_tracker = st.session_state.progress_tracker
     
