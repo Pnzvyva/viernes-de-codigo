@@ -5,6 +5,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 from utils.progress_tracker import ProgressTracker
 
+
 def run_class():
     st.header("Clase 1: Introducción a las finanzas cuantitativas")
     

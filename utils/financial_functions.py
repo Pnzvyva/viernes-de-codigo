@@ -80,3 +80,35 @@ class FinancialCalculations:
             paths[:, i + 1] = paths[:, i] * np.exp((mu - 0.5 * sigma ** 2) * dt + sigma * np.sqrt(dt) * z)
         
         return paths
+    
+    @staticmethod
+    def lookback_option_mc(S0, T, r, sigma, n_sims, option_type='call', n_steps=252):
+        np.random.seed(42)
+        
+        # Time step
+        dt = T / n_steps
+        # Generate random paths
+        Z = np.random.standard_normal((n_sims, n_steps))
+        S = np.zeros((n_sims, n_steps + 1))
+        S[:, 0] = S0
+        
+        # Simulate paths
+        for i in range(n_steps):
+            S[:, i + 1] = S[:, i] * np.exp((r - 0.5 * sigma**2) * dt + sigma * np.sqrt(dt) * Z[:, i])
+        
+        # Calculate the minimum and maximum prices during the life of the option
+        min_prices = np.min(S[:, 1:], axis=1)  # Min prices excluding the initial price
+        max_prices = np.max(S[:, 1:], axis=1)  # Max prices excluding the initial price
+        
+        # Calculate the payoff for the option
+        if option_type == 'call':
+            payoffs = np.maximum(S[:, -1] - min_prices, 0)  # Lookback call payoff
+        else:
+            payoffs = np.maximum(max_prices - S[:, -1], 0)  # Lookback put payoff
+        
+        # Discount to present value
+        option_price = np.exp(-r * T) * np.mean(payoffs)
+        standard_error = np.exp(-r * T) * np.std(payoffs) / np.sqrt(n_sims)
+        
+        # Devuelve tres valores: precio de la opción, error estándar, y payoffs
+        return option_price, standard_error, payoffs

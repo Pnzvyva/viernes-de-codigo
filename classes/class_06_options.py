@@ -12,199 +12,195 @@ def run_class():
     
     progress_tracker = st.session_state.progress_tracker
     
-    tab1, tab2, tab3, tab4 = st.tabs(["Fundamentos de Opciones", "Modelo Black-Scholes", "Griegas de Opciones", "Estrategias"])
+    tab1, tab2, tab3, tab4 = st.tabs([
+        "Fundamentos de Opciones",
+        "Modelo Black-Scholes",
+        "Griegas de Opciones",
+        "Estrategias"
+    ])
     
+    # -----------------------------------------------------------
+    # TAB 1: Fundamentos
+    # -----------------------------------------------------------
     with tab1:
-        st.subheader("Understanding Options")
+        st.subheader("Comprendiendo las Opciones")
         
         st.write("""
-        Options are financial derivatives that give the holder the right, but not the obligation, 
-        to buy (call) or sell (put) an underlying asset at a specified price (strike) before or on expiration.
+        Las opciones son instrumentos financieros derivados que otorgan al comprador el derecho, 
+        pero no la obligación, de **comprar (call)** o **vender (put)** un activo subyacente 
+        a un precio determinado (precio de ejercicio o strike) antes o en la fecha de vencimiento.
         """)
         
         col1, col2 = st.columns(2)
         
         with col1:
             st.write("""
-            **Call Options:**
-            - Right to BUY at strike price
-            - Profit when S > K
-            - Limited loss (premium)
-            - Unlimited profit potential
-            - Bullish strategy
+            **Opciones Call:**
+            - Derecho a **comprar** al precio strike
+            - Beneficio cuando S > K
+            - Pérdida limitada (prima)
+            - Potencial de ganancia ilimitado
+            - Estrategia alcista
             """)
         
         with col2:
             st.write("""
-            **Put Options:**
-            - Right to SELL at strike price
-            - Profit when S < K
-            - Limited loss (premium)
-            - Limited profit (K - premium)
-            - Bearish strategy
+            **Opciones Put:**
+            - Derecho a **vender** al precio strike
+            - Beneficio cuando S < K
+            - Pérdida limitada (prima)
+            - Ganancia máxima limitada (K - prima)
+            - Estrategia bajista
             """)
         
-        st.subheader("Option Payoff Diagrams")
+        st.subheader("Diagramas de Pago de Opciones")
         
-        option_type = st.selectbox("Select Option Type:", ["Call Option", "Put Option"])
+        option_type = st.selectbox("Selecciona el tipo de opción:", ["Call Option", "Put Option"])
         
         col1, col2 = st.columns(2)
         with col1:
-            strike_price = st.slider("Strike Price ($)", 80, 120, 100)
-            premium = st.slider("Option Premium ($)", 1, 20, 5)
+            strike_price = st.slider("Precio de Ejercicio ($)", 80, 120, 100)
+            premium = st.slider("Prima de la Opción ($)", 1, 20, 5)
         with col2:
-            position = st.radio("Position:", ["Long (Buy)", "Short (Sell)"])
+            position = st.radio("Posición:", ["Long (Buy)", "Short (Sell)"])
         
-        # Generate payoff diagram
+        # Generar diagrama
         spot_range = np.linspace(60, 140, 100)
         
         if option_type == "Call Option":
             if position == "Long (Buy)":
                 payoffs = np.maximum(spot_range - strike_price, 0) - premium
-                title = f"Long Call (Strike: ${strike_price}, Premium: ${premium})"
+                title = f"Call Larga (Strike: ${strike_price}, Prima: ${premium})"
             else:
                 payoffs = premium - np.maximum(spot_range - strike_price, 0)
-                title = f"Short Call (Strike: ${strike_price}, Premium: ${premium})"
+                title = f"Call Corta (Strike: ${strike_price}, Prima: ${premium})"
         else:  # Put Option
             if position == "Long (Buy)":
                 payoffs = np.maximum(strike_price - spot_range, 0) - premium
-                title = f"Long Put (Strike: ${strike_price}, Premium: ${premium})"
+                title = f"Put Larga (Strike: ${strike_price}, Prima: ${premium})"
             else:
                 payoffs = premium - np.maximum(strike_price - spot_range, 0)
-                title = f"Short Put (Strike: ${strike_price}, Premium: ${premium})"
+                title = f"Put Corta (Strike: ${strike_price}, Prima: ${premium})"
         
         fig = go.Figure()
-        fig.add_trace(go.Scatter(x=spot_range, y=payoffs, mode='lines', name='Payoff'))
+        fig.add_trace(go.Scatter(x=spot_range, y=payoffs, mode='lines', name='Pago'))
         fig.add_hline(y=0, line_dash="dash", line_color="black")
-        fig.add_vline(x=strike_price, line_dash="dot", annotation_text="Strike Price")
+        fig.add_vline(x=strike_price, line_dash="dot", annotation_text="Precio Strike")
         
-        # Highlight profit/loss regions
         profit_mask = payoffs > 0
         loss_mask = payoffs < 0
         
-        fig.add_trace(go.Scatter(x=spot_range[profit_mask], y=payoffs[profit_mask], 
-                                fill='tonexty', fillcolor='rgba(0,255,0,0.2)', 
-                                mode='none', name='Profit', showlegend=False))
-        fig.add_trace(go.Scatter(x=spot_range[loss_mask], y=payoffs[loss_mask], 
-                                fill='tonexty', fillcolor='rgba(255,0,0,0.2)', 
-                                mode='none', name='Loss', showlegend=False))
+        fig.add_trace(go.Scatter(x=spot_range[profit_mask], y=payoffs[profit_mask],
+                                 fill='tonexty', fillcolor='rgba(0,255,0,0.2)',
+                                 mode='none', name='Ganancia', showlegend=False))
+        fig.add_trace(go.Scatter(x=spot_range[loss_mask], y=payoffs[loss_mask],
+                                 fill='tonexty', fillcolor='rgba(255,0,0,0.2)',
+                                 mode='none', name='Pérdida', showlegend=False))
         
-        fig.update_layout(title=title, xaxis_title="Stock Price at Expiration ($)", 
-                         yaxis_title="Profit/Loss ($)")
+        fig.update_layout(title=title, xaxis_title="Precio del Activo al Vencimiento ($)",
+                          yaxis_title="Ganancia/Pérdida ($)")
         st.plotly_chart(fig, use_container_width=True)
         
-        # Key metrics
         breakeven = strike_price + premium if "Call" in option_type else strike_price - premium
         if position == "Short (Sell)":
             breakeven = strike_price - premium if "Call" in option_type else strike_price + premium
         
         col1, col2, col3 = st.columns(3)
         with col1:
-            st.metric("Strike Price", f"${strike_price}")
+            st.metric("Precio Strike", f"${strike_price}")
         with col2:
-            st.metric("Premium", f"${premium}")
+            st.metric("Prima", f"${premium}")
         with col3:
-            st.metric("Breakeven", f"${breakeven:.2f}")
+            st.metric("Punto de Equilibrio", f"${breakeven:.2f}")
     
+    # -----------------------------------------------------------
+    # TAB 2: Black-Scholes
+    # -----------------------------------------------------------
     with tab2:
-        st.subheader("Black-Scholes Option Pricing Model")
+        st.subheader("Modelo de Valoración de Opciones Black-Scholes")
         
         st.write("""
-        The Black-Scholes model provides a mathematical framework for pricing European options. 
-        It assumes constant volatility, risk-free rate, and no dividends.
+        El modelo de **Black-Scholes** proporciona un marco matemático para valorar opciones europeas.  
+        Asume volatilidad constante, tasa libre de riesgo y ausencia de dividendos.
         """)
         
-        with st.expander("📊 Black-Scholes Formula"):
+        with st.expander("📊 Fórmulas del Modelo Black-Scholes"):
             st.latex(r"C = S_0 N(d_1) - K e^{-rT} N(d_2)")
             st.latex(r"P = K e^{-rT} N(-d_2) - S_0 N(-d_1)")
-            st.write("Where:")
+            st.write("Donde:")
             st.latex(r"d_1 = \frac{\ln(S_0/K) + (r + \sigma^2/2)T}{\sigma\sqrt{T}}")
             st.latex(r"d_2 = d_1 - \sigma\sqrt{T}")
-            st.write("C = Call price, P = Put price, N() = Cumulative normal distribution")
+            st.write("C = Precio del Call, P = Precio del Put, N() = Distribución normal acumulada")
         
-        st.subheader("Black-Scholes Calculator")
+        st.subheader("Calculadora Black-Scholes")
         
         col1, col2, col3 = st.columns(3)
         with col1:
-            S = st.number_input("Current Stock Price (S₀) ($)", value=100.0, min_value=0.01)
-            K = st.number_input("Strike Price (K) ($)", value=100.0, min_value=0.01)
+            S = st.number_input("Precio actual del activo (S₀) ($)", value=100.0, min_value=0.01)
+            K = st.number_input("Precio de ejercicio (K) ($)", value=100.0, min_value=0.01)
         with col2:
-            T = st.number_input("Time to Expiration (T) years", value=0.25, min_value=0.001, max_value=10.0)
-            r = st.number_input("Risk-Free Rate (r) %", value=5.0, min_value=0.0, max_value=50.0) / 100
+            T = st.number_input("Tiempo al vencimiento (T) en años", value=0.25, min_value=0.001, max_value=10.0)
+            r = st.number_input("Tasa libre de riesgo (r) %", value=5.0, min_value=0.0, max_value=50.0) / 100
         with col3:
-            sigma = st.number_input("Volatility (σ) %", value=20.0, min_value=0.1, max_value=200.0) / 100
+            sigma = st.number_input("Volatilidad (σ) %", value=20.0, min_value=0.1, max_value=200.0) / 100
         
-        if st.button("Calculate Option Prices"):
-            # Calculate Black-Scholes prices
+        if st.button("Calcular precios de las opciones"):
             call_price = FinancialCalculations.black_scholes_call(S, K, T, r, sigma)
             put_price = FinancialCalculations.black_scholes_put(S, K, T, r, sigma)
             
-            # Calculate d1 and d2 for analysis
             d1 = (np.log(S / K) + (r + 0.5 * sigma ** 2) * T) / (sigma * np.sqrt(T))
             d2 = d1 - sigma * np.sqrt(T)
             
             col1, col2 = st.columns(2)
             with col1:
-                st.success(f"Call Option Price: ${call_price:.2f}")
+                st.success(f"Precio del Call: ${call_price:.2f}")
                 st.info(f"N(d₁) = {norm.cdf(d1):.4f}")
                 st.info(f"N(d₂) = {norm.cdf(d2):.4f}")
             with col2:
-                st.success(f"Put Option Price: ${put_price:.2f}")
+                st.success(f"Precio del Put: ${put_price:.2f}")
                 st.info(f"d₁ = {d1:.4f}")
                 st.info(f"d₂ = {d2:.4f}")
             
-            # Put-Call Parity Check
             parity_check = call_price - put_price - (S - K * np.exp(-r * T))
-            st.write(f"**Put-Call Parity Check:** {parity_check:.6f} (should be ≈ 0)")
+            st.write(f"**Revisión de Paridad Put-Call:** {parity_check:.6f} (debería ser ≈ 0)")
+        
+        st.subheader("Análisis de Sensibilidad")
+        
+        analysis_param = st.selectbox("Selecciona el parámetro a analizar:", 
+                                     ["Precio del Activo", "Volatilidad", "Tiempo al Vencimiento"])
+        
+        if analysis_param == "Precio del Activo":
+            spot_range = np.linspace(S * 0.7, S * 1.3, 50)
+            call_prices = [FinancialCalculations.black_scholes_call(s, K, T, r, sigma) for s in spot_range]
+            put_prices = [FinancialCalculations.black_scholes_put(s, K, T, r, sigma) for s in spot_range]
             
-            # Sensitivity Analysis
-            st.subheader("Sensitivity Analysis")
-            
-            analysis_param = st.selectbox("Select Parameter for Analysis:", 
-                                        ["Stock Price", "Volatility", "Time to Expiration"])
-            
-            if analysis_param == "Stock Price":
-                spot_range = np.linspace(S * 0.7, S * 1.3, 50)
-                call_prices = [FinancialCalculations.black_scholes_call(s, K, T, r, sigma) for s in spot_range]
-                put_prices = [FinancialCalculations.black_scholes_put(s, K, T, r, sigma) for s in spot_range]
-                
-                fig = go.Figure()
-                fig.add_trace(go.Scatter(x=spot_range, y=call_prices, mode='lines', name='Call Price'))
-                fig.add_trace(go.Scatter(x=spot_range, y=put_prices, mode='lines', name='Put Price'))
-                fig.add_vline(x=S, line_dash="dot", annotation_text="Current Price")
-                fig.add_vline(x=K, line_dash="dash", annotation_text="Strike Price")
-                fig.update_layout(title="Option Prices vs Stock Price", 
-                                xaxis_title="Stock Price ($)", yaxis_title="Option Price ($)")
-                st.plotly_chart(fig, use_container_width=True)
-            
-            elif analysis_param == "Volatility":
-                vol_range = np.linspace(0.05, 0.8, 50)
-                call_prices = [FinancialCalculations.black_scholes_call(S, K, T, r, vol) for vol in vol_range]
-                put_prices = [FinancialCalculations.black_scholes_put(S, K, T, r, vol) for vol in vol_range]
-                
-                fig = go.Figure()
-                fig.add_trace(go.Scatter(x=vol_range*100, y=call_prices, mode='lines', name='Call Price'))
-                fig.add_trace(go.Scatter(x=vol_range*100, y=put_prices, mode='lines', name='Put Price'))
-                fig.add_vline(x=sigma*100, line_dash="dot", annotation_text="Current Volatility")
-                fig.update_layout(title="Option Prices vs Volatility", 
-                                xaxis_title="Volatility (%)", yaxis_title="Option Price ($)")
-                st.plotly_chart(fig, use_container_width=True)
-    
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(x=spot_range, y=call_prices, mode='lines', name='Precio del Call'))
+            fig.add_trace(go.Scatter(x=spot_range, y=put_prices, mode='lines', name='Precio del Put'))
+            fig.add_vline(x=S, line_dash="dot", annotation_text="Precio Actual")
+            fig.add_vline(x=K, line_dash="dash", annotation_text="Precio Strike")
+            fig.update_layout(title="Precios de Opciones vs Precio del Activo", 
+                              xaxis_title="Precio del Activo ($)", yaxis_title="Precio de la Opción ($)")
+            st.plotly_chart(fig, use_container_width=True)
+
+    # -----------------------------------------------------------
+    # TAB 3: Griegas de Opciones
+    # -----------------------------------------------------------
     with tab3:
-        st.subheader("Option Greeks")
+        st.subheader("Griegas de las Opciones")
         
         st.write("""
-        The Greeks measure the sensitivity of option prices to changes in various parameters. 
-        They are essential for risk management and hedging strategies.
+        Las **Griegas** miden la sensibilidad del precio de una opción ante cambios en distintas variables.  
+        Son herramientas fundamentales para la **gestión del riesgo** y el diseño de **estrategias de cobertura**.
         """)
         
-        def calculate_greeks(S, K, T, r, sigma, option_type='call'):
-            """Calculate option Greeks"""
+        def calcular_griegas(S, K, T, r, sigma, tipo='call'):
+            """Calcular las Griegas de una opción"""
             d1 = (np.log(S / K) + (r + 0.5 * sigma ** 2) * T) / (sigma * np.sqrt(T))
             d2 = d1 - sigma * np.sqrt(T)
             
             # Delta
-            if option_type == 'call':
+            if tipo == 'call':
                 delta = norm.cdf(d1)
             else:
                 delta = norm.cdf(d1) - 1
@@ -212,306 +208,273 @@ def run_class():
             # Gamma
             gamma = norm.pdf(d1) / (S * sigma * np.sqrt(T))
             
-            # Theta (per day)
-            if option_type == 'call':
-                theta = (-(S * norm.pdf(d1) * sigma) / (2 * np.sqrt(T)) - 
+            # Theta (por día)
+            if tipo == 'call':
+                theta = (-(S * norm.pdf(d1) * sigma) / (2 * np.sqrt(T)) -
                         r * K * np.exp(-r * T) * norm.cdf(d2)) / 365
             else:
-                theta = (-(S * norm.pdf(d1) * sigma) / (2 * np.sqrt(T)) + 
+                theta = (-(S * norm.pdf(d1) * sigma) / (2 * np.sqrt(T)) +
                         r * K * np.exp(-r * T) * norm.cdf(-d2)) / 365
             
-            # Vega (per 1% change in volatility)
+            # Vega (por 1% cambio en volatilidad)
             vega = S * np.sqrt(T) * norm.pdf(d1) / 100
             
-            # Rho (per 1% change in interest rate)
-            if option_type == 'call':
+            # Rho (por 1% cambio en tasa)
+            if tipo == 'call':
                 rho = K * T * np.exp(-r * T) * norm.cdf(d2) / 100
             else:
                 rho = -K * T * np.exp(-r * T) * norm.cdf(-d2) / 100
             
             return {'Delta': delta, 'Gamma': gamma, 'Theta': theta, 'Vega': vega, 'Rho': rho}
         
-        # Greeks Calculator
-        st.subheader("Greeks Calculator")
+        st.subheader("Calculadora de Griegas")
         
-        # Use same parameters from previous tab or allow new input
-        if 'S' not in locals():
-            col1, col2, col3 = st.columns(3)
-            with col1:
-                S_greeks = st.number_input("Stock Price ($)", value=100.0, min_value=0.01, key="greeks_S")
-                K_greeks = st.number_input("Strike Price ($)", value=100.0, min_value=0.01, key="greeks_K")
-            with col2:
-                T_greeks = st.number_input("Time to Expiration (years)", value=0.25, min_value=0.001, key="greeks_T")
-                r_greeks = st.number_input("Risk-Free Rate (%)", value=5.0, min_value=0.0, key="greeks_r") / 100
-            with col3:
-                sigma_greeks = st.number_input("Volatility (%)", value=20.0, min_value=0.1, key="greeks_vol") / 100
-        else:
-            S_greeks, K_greeks, T_greeks, r_greeks, sigma_greeks = S, K, T, r, sigma
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            S_g = st.number_input("Precio del Activo ($)", value=100.0, min_value=0.01)
+            K_g = st.number_input("Precio Strike ($)", value=100.0, min_value=0.01)
+        with col2:
+            T_g = st.number_input("Tiempo al Vencimiento (años)", value=0.25, min_value=0.001)
+            r_g = st.number_input("Tasa Libre de Riesgo (%)", value=5.0, min_value=0.0) / 100
+        with col3:
+            sigma_g = st.number_input("Volatilidad (%)", value=20.0, min_value=0.1) / 100
         
-        option_type_greek = st.radio("Option Type:", ["Call", "Put"], key="greek_type")
+        tipo_opcion = st.radio("Tipo de Opción:", ["Call", "Put"])
         
-        if st.button("Calculate Greeks"):
-            greeks_call = calculate_greeks(S_greeks, K_greeks, T_greeks, r_greeks, sigma_greeks, 'call')
-            greeks_put = calculate_greeks(S_greeks, K_greeks, T_greeks, r_greeks, sigma_greeks, 'put')
+        if st.button("Calcular Griegas"):
+            g_call = calcular_griegas(S_g, K_g, T_g, r_g, sigma_g, 'call')
+            g_put = calcular_griegas(S_g, K_g, T_g, r_g, sigma_g, 'put')
             
-            # Display Greeks
-            st.subheader("Option Greeks")
-            
-            greeks_data = {
-                'Greek': ['Delta (Δ)', 'Gamma (Γ)', 'Theta (Θ)', 'Vega (ν)', 'Rho (ρ)'],
-                'Call Option': [f"{greeks_call['Delta']:.4f}", f"{greeks_call['Gamma']:.4f}", 
-                               f"{greeks_call['Theta']:.4f}", f"{greeks_call['Vega']:.4f}", f"{greeks_call['Rho']:.4f}"],
-                'Put Option': [f"{greeks_put['Delta']:.4f}", f"{greeks_put['Gamma']:.4f}", 
-                              f"{greeks_put['Theta']:.4f}", f"{greeks_put['Vega']:.4f}", f"{greeks_put['Rho']:.4f}"],
-                'Interpretation': [
-                    'Price change per $1 stock move',
-                    'Delta change per $1 stock move', 
-                    'Price change per day (time decay)',
-                    'Price change per 1% volatility change',
-                    'Price change per 1% rate change'
+            st.subheader("Resultados de las Griegas")
+            datos = {
+                'Griega': ['Delta (Δ)', 'Gamma (Γ)', 'Theta (Θ)', 'Vega (ν)', 'Rho (ρ)'],
+                'Call Option': [f"{g_call['Delta']:.4f}", f"{g_call['Gamma']:.4f}", 
+                                f"{g_call['Theta']:.4f}", f"{g_call['Vega']:.4f}", f"{g_call['Rho']:.4f}"],
+                'Put Option': [f"{g_put['Delta']:.4f}", f"{g_put['Gamma']:.4f}", 
+                               f"{g_put['Theta']:.4f}", f"{g_put['Vega']:.4f}", f"{g_put['Rho']:.4f}"],
+                'Interpretación': [
+                    'Cambio del precio ante una variación de $1 en el activo',
+                    'Cambio del Delta ante una variación de $1 en el activo',
+                    'Cambio del precio por día (decadencia temporal)',
+                    'Cambio del precio ante 1% de cambio en la volatilidad',
+                    'Cambio del precio ante 1% de cambio en la tasa'
                 ]
             }
             
-            df_greeks = pd.DataFrame(greeks_data)
-            st.dataframe(df_greeks, use_container_width=True)
-            
-            # Greeks visualization
-            st.subheader("Greeks Visualization")
-            
-            spot_range = np.linspace(S_greeks * 0.7, S_greeks * 1.3, 50)
-            
-            selected_greek = option_type_greek.lower()
-            greek_values = []
-            
-            for spot in spot_range:
-                greeks = calculate_greeks(spot, K_greeks, T_greeks, r_greeks, sigma_greeks, selected_greek)
-                greek_values.append(greeks)
-            
-            # Plot selected Greeks
-            fig = go.Figure()
-            fig.add_trace(go.Scatter(x=spot_range, y=[g['Delta'] for g in greek_values], 
-                                   mode='lines', name='Delta'))
-            fig.add_trace(go.Scatter(x=spot_range, y=[g['Gamma']*10 for g in greek_values], 
-                                   mode='lines', name='Gamma (×10)'))
-            fig.add_vline(x=S_greeks, line_dash="dot", annotation_text="Current Price")
-            fig.add_vline(x=K_greeks, line_dash="dash", annotation_text="Strike Price")
-            
-            fig.update_layout(title=f"{option_type_greek} Option Greeks vs Stock Price", 
-                            xaxis_title="Stock Price ($)", yaxis_title="Greek Value")
-            st.plotly_chart(fig, use_container_width=True)
+            df_g = pd.DataFrame(datos)
+            st.dataframe(df_g, use_container_width=True)
     
+    # -----------------------------------------------------------
+    # TAB 4: Estrategias y Ejercicios
+    # -----------------------------------------------------------
     with tab4:
-        st.subheader("Option Trading Strategies")
+        st.subheader("Estrategias con Opciones")
         
         st.write("""
-        Option strategies combine multiple options to create specific risk-reward profiles. 
-        Here we'll explore some common multi-leg strategies.
+        Las estrategias con opciones combinan múltiples posiciones para crear perfiles específicos de riesgo y retorno.  
+        A continuación exploraremos algunas de las más comunes.
         """)
         
-        strategy = st.selectbox("Select Strategy:", 
+        strategy = st.selectbox("Selecciona una estrategia:", 
                                ["Covered Call", "Protective Put", "Bull Call Spread", "Iron Condor"])
         
+        # ---------------- Covered Call ----------------
         if strategy == "Covered Call":
             st.write("**Covered Call Strategy**")
-            st.write("Long stock + Short call option. Generates income but caps upside.")
+            st.write("Posición larga en acciones + venta de opción call. Genera ingresos pero limita la ganancia máxima.")
             
             col1, col2 = st.columns(2)
             with col1:
-                stock_price = st.number_input("Stock Price ($)", value=100.0, key="cc_stock")
-                shares = st.number_input("Number of Shares", value=100, min_value=1, key="cc_shares")
+                stock_price = st.number_input("Precio de la acción ($)", value=100.0, key="cc_stock")
+                shares = st.number_input("Número de acciones", value=100, min_value=1)
             with col2:
-                call_strike = st.number_input("Call Strike ($)", value=105.0, key="cc_strike")
-                call_premium = st.number_input("Call Premium ($)", value=3.0, key="cc_premium")
+                call_strike = st.number_input("Precio Strike del Call ($)", value=105.0)
+                call_premium = st.number_input("Prima del Call ($)", value=3.0)
             
-            # Calculate payoffs
             spot_range = np.linspace(stock_price * 0.8, stock_price * 1.3, 100)
             stock_payoffs = (spot_range - stock_price) * shares
             call_payoffs = (call_premium - np.maximum(spot_range - call_strike, 0)) * shares
             total_payoffs = stock_payoffs + call_payoffs
             
             fig = go.Figure()
-            fig.add_trace(go.Scatter(x=spot_range, y=stock_payoffs, mode='lines', name='Stock Position'))
+            fig.add_trace(go.Scatter(x=spot_range, y=stock_payoffs, mode='lines', name='Acción'))
             fig.add_trace(go.Scatter(x=spot_range, y=call_payoffs, mode='lines', name='Short Call'))
-            fig.add_trace(go.Scatter(x=spot_range, y=total_payoffs, mode='lines', name='Combined Position', 
-                                   line=dict(width=3)))
+            fig.add_trace(go.Scatter(x=spot_range, y=total_payoffs, mode='lines', name='Posición Combinada', line=dict(width=3)))
             fig.add_hline(y=0, line_dash="dash", line_color="black")
-            
-            fig.update_layout(title="Covered Call Strategy Payoff", 
-                            xaxis_title="Stock Price at Expiration ($)", yaxis_title="Profit/Loss ($)")
+            fig.update_layout(title="Payoff Estrategia Covered Call", 
+                              xaxis_title="Precio al Vencimiento ($)", yaxis_title="Ganancia/Pérdida ($)")
             st.plotly_chart(fig, use_container_width=True)
             
-            # Key metrics
             max_profit = call_premium * shares + max(0, call_strike - stock_price) * shares
             breakeven = stock_price - call_premium
-            
+
             col1, col2, col3 = st.columns(3)
             with col1:
-                st.metric("Maximum Profit", f"${max_profit:.2f}")
+                st.metric("Ganancia Máxima", f"${max_profit:.2f}")
             with col2:
-                st.metric("Maximum Loss", "Unlimited")
+                st.metric("Pérdida Máxima", "Ilimitada")
             with col3:
-                st.metric("Breakeven", f"${breakeven:.2f}")
-        
-        elif strategy == "Bull Call Spread":
-            st.write("**Bull Call Spread Strategy**")
-            st.write("Long lower strike call + Short higher strike call. Limited profit and loss.")
+                st.metric("Punto de Equilibrio", f"${breakeven:.2f}")
+
+        # ---------------- Protective Put ----------------
+        elif strategy == "Protective Put":
+            st.write("**Protective Put Strategy**")
+            st.write("Posición larga en acciones + compra de opción put. Protege ante caídas manteniendo el potencial alcista.")
             
             col1, col2 = st.columns(2)
             with col1:
-                long_strike = st.number_input("Long Call Strike ($)", value=95.0, key="bcs_long")
-                long_premium = st.number_input("Long Call Premium ($)", value=6.0, key="bcs_long_prem")
+                stock_price = st.number_input("Precio de la acción ($)", value=100.0, key="pp_stock")
+                shares = st.number_input("Número de acciones", value=100, min_value=1)
             with col2:
-                short_strike = st.number_input("Short Call Strike ($)", value=105.0, key="bcs_short")
-                short_premium = st.number_input("Short Call Premium ($)", value=2.0, key="bcs_short_prem")
+                put_strike = st.number_input("Precio Strike del Put ($)", value=95.0)
+                put_premium = st.number_input("Prima del Put ($)", value=4.0)
+            
+            spot_range = np.linspace(stock_price * 0.7, stock_price * 1.3, 100)
+            stock_payoffs = (spot_range - stock_price) * shares
+            put_payoffs = (np.maximum(put_strike - spot_range, 0) - put_premium) * shares
+            total_payoffs = stock_payoffs + put_payoffs
+            
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(x=spot_range, y=stock_payoffs, mode='lines', name='Acción'))
+            fig.add_trace(go.Scatter(x=spot_range, y=put_payoffs, mode='lines', name='Long Put'))
+            fig.add_trace(go.Scatter(x=spot_range, y=total_payoffs, mode='lines', name='Posición Combinada', line=dict(width=3)))
+            fig.add_hline(y=0, line_dash="dash", line_color="black")
+            fig.update_layout(title="Payoff Estrategia Protective Put",
+                              xaxis_title="Precio al Vencimiento ($)", yaxis_title="Ganancia/Pérdida ($)")
+            st.plotly_chart(fig, use_container_width=True)
+            
+            max_loss = (stock_price - put_strike + put_premium) * shares
+            breakeven = stock_price + put_premium
+
+            col1, col2, col3 = st.columns(3)
+            with col1:
+                st.metric("Ganancia Máxima", "Ilimitada")
+            with col2:
+                st.metric("Pérdida Máxima", f"${max_loss:.2f}")
+            with col3:
+                st.metric("Punto de Equilibrio", f"${breakeven:.2f}")
+
+        # ---------------- Bull Call Spread ----------------
+        elif strategy == "Bull Call Spread":
+            st.write("**Bull Call Spread Strategy**")
+            st.write("Compra de call con strike bajo + venta de call con strike alto. Riesgo y ganancia limitados.")
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                long_strike = st.number_input("Strike Call Largo ($)", value=95.0)
+                long_premium = st.number_input("Prima Call Largo ($)", value=6.0)
+            with col2:
+                short_strike = st.number_input("Strike Call Corto ($)", value=105.0)
+                short_premium = st.number_input("Prima Call Corto ($)", value=2.0)
             
             net_debit = long_premium - short_premium
-            st.info(f"Net Debit: ${net_debit:.2f}")
+            st.info(f"Débito Neto: ${net_debit:.2f}")
             
-            # Calculate payoffs
             spot_range = np.linspace(80, 120, 100)
             long_call_payoffs = np.maximum(spot_range - long_strike, 0) - long_premium
             short_call_payoffs = short_premium - np.maximum(spot_range - short_strike, 0)
             spread_payoffs = long_call_payoffs + short_call_payoffs
             
             fig = go.Figure()
-            fig.add_trace(go.Scatter(x=spot_range, y=long_call_payoffs, mode='lines', name='Long Call'))
-            fig.add_trace(go.Scatter(x=spot_range, y=short_call_payoffs, mode='lines', name='Short Call'))
-            fig.add_trace(go.Scatter(x=spot_range, y=spread_payoffs, mode='lines', name='Bull Call Spread', 
-                                   line=dict(width=3)))
+            fig.add_trace(go.Scatter(x=spot_range, y=spread_payoffs, mode='lines', name='Bull Call Spread', line=dict(width=3)))
             fig.add_hline(y=0, line_dash="dash", line_color="black")
-            
-            fig.update_layout(title="Bull Call Spread Payoff", 
-                            xaxis_title="Stock Price at Expiration ($)", yaxis_title="Profit/Loss ($)")
+            fig.update_layout(title="Payoff Estrategia Bull Call Spread", 
+                              xaxis_title="Precio al Vencimiento ($)", yaxis_title="Ganancia/Pérdida ($)")
             st.plotly_chart(fig, use_container_width=True)
             
-            # Strategy metrics
             max_profit = short_strike - long_strike - net_debit
             max_loss = net_debit
             breakeven = long_strike + net_debit
-            
+
             col1, col2, col3 = st.columns(3)
             with col1:
-                st.metric("Maximum Profit", f"${max_profit:.2f}")
+                st.metric("Ganancia Máxima", f"${max_profit:.2f}")
             with col2:
-                st.metric("Maximum Loss", f"${max_loss:.2f}")
+                st.metric("Pérdida Máxima", f"${max_loss:.2f}")
             with col3:
-                st.metric("Breakeven", f"${breakeven:.2f}")
-        
-        # Practice problems
-        st.subheader("Options Practice Problems")
-        
-        problem = st.selectbox("Select Problem:", ["Problem 1: Black-Scholes", "Problem 2: Put-Call Parity"])
-        
-        if problem == "Problem 1: Black-Scholes":
+                st.metric("Punto de Equilibrio", f"${breakeven:.2f}")
+
+        # ---------------- Iron Condor ----------------
+        elif strategy == "Iron Condor":
+            st.write("**Iron Condor Strategy**")
             st.write("""
-            **Problem 1:**
-            Calculate the Black-Scholes price of a call option with:
-            - Stock price: $50
-            - Strike price: $52
-            - Time to expiration: 3 months (0.25 years)
-            - Risk-free rate: 4%
-            - Volatility: 25%
+            Combinación de un Bull Put Spread y un Bear Call Spread.  
+            Gana cuando el precio se mantiene dentro de un rango.
             """)
             
-            user_answer = st.number_input("Your answer ($):", min_value=0.0, format="%.2f", key="bs_p1")
+            col1, col2 = st.columns(2)
+            with col1:
+                short_put_strike = st.number_input("Strike Put Corto ($)", value=95.0)
+                long_put_strike = st.number_input("Strike Put Largo ($)", value=90.0)
+                put_credit = st.number_input("Crédito Neto Put ($)", value=1.5)
+            with col2:
+                short_call_strike = st.number_input("Strike Call Corto ($)", value=105.0)
+                long_call_strike = st.number_input("Strike Call Largo ($)", value=110.0)
+                call_credit = st.number_input("Crédito Neto Call ($)", value=1.5)
             
-            if st.button("Check Answer", key="check_bs_p1"):
-                correct_answer = FinancialCalculations.black_scholes_call(50, 52, 0.25, 0.04, 0.25)
-                if abs(user_answer - correct_answer) < 0.10:
-                    st.success(f"✅ Correct! The answer is ${correct_answer:.2f}")
-                else:
-                    st.error(f"❌ Incorrect. The correct answer is ${correct_answer:.2f}")
-        
-        # Final assessment
-        st.subheader("Class Assessment")
-        
-        q1 = st.radio(
-            "Which Greek measures time decay?",
-            ["Delta", "Gamma", "Theta", "Vega"],
-            key="opt_q1"
-        )
-        
-        q2 = st.radio(
-            "Put-call parity states that C - P equals:",
-            ["S - K", "S - Ke^(-rT)", "K - S", "Ke^(-rT) - S"],
-            key="opt_q2"
-        )
-        
-        q3 = st.radio(
-            "Which strategy benefits most from high volatility?",
-            ["Covered call", "Long straddle", "Short straddle", "Bull spread"],
-            key="opt_q3"
-        )
-        
-        if st.button("Submit Assessment"):
-            score = 0
+            total_credit = put_credit + call_credit
+            st.info(f"Crédito Neto Total: ${total_credit:.2f}")
             
-            if q1 == "Theta":
-                st.success("Q1: Correct! ✅")
-                score += 1
-            else:
-                st.error("Q1: Incorrect. Theta measures time decay (price change per day).")
+            spot_range = np.linspace(80, 120, 200)
+            short_put_payoff = np.minimum(0, -(short_put_strike - spot_range))
+            long_put_payoff = np.maximum(long_put_strike - spot_range, 0)
+            short_call_payoff = np.minimum(0, -(spot_range - short_call_strike))
+            long_call_payoff = np.maximum(spot_range - long_call_strike, 0)
             
-            if q2 == "S - Ke^(-rT)":
-                st.success("Q2: Correct! ✅")
-                score += 1
-            else:
-                st.error("Q2: Incorrect. Put-call parity: C - P = S - Ke^(-rT)")
+            total_payoff = (total_credit 
+                            + short_put_payoff - long_put_payoff 
+                            + short_call_payoff - long_call_payoff)
             
-            if q3 == "Long straddle":
-                st.success("Q3: Correct! ✅")
-                score += 1
-            else:
-                st.error("Q3: Incorrect. Long straddle profits from high volatility in either direction.")
+            fig = go.Figure()
+            fig.add_trace(go.Scatter(x=spot_range, y=total_payoff, mode='lines', name='Iron Condor Payoff', line=dict(width=3)))
+            fig.add_hline(y=0, line_dash="dash", line_color="black")
+            fig.add_vrect(x0=short_put_strike, x1=short_call_strike, fillcolor="green", opacity=0.1,
+                          annotation_text="Zona de Ganancia")
             
-            st.write(f"Your score: {score}/3")
+            fig.update_layout(title="Payoff Estrategia Iron Condor",
+                              xaxis_title="Precio al Vencimiento ($)", yaxis_title="Ganancia/Pérdida ($)")
+            st.plotly_chart(fig, use_container_width=True)
             
-            if score >= 2:
-                st.balloons()
-                progress_tracker.mark_class_completed("Class 6: Options Pricing")
-                progress_tracker.set_class_score("Class 6: Options Pricing", (score/3) * 100)
-                st.success("🎉 Excellent! You've mastered options pricing!")
+            max_profit = total_credit
+            max_loss = (short_call_strike - long_call_strike) - total_credit
+            breakeven_low = short_put_strike - total_credit
+            breakeven_high = short_call_strike + total_credit
+
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                st.metric("Ganancia Máxima", f"${max_profit:.2f}")
+            with col2:
+                st.metric("Pérdida Máxima", f"${max_loss:.2f}")
+            with col3:
+                st.metric("Equilibrio Inferior", f"${breakeven_low:.2f}")
+            with col4:
+                st.metric("Equilibrio Superior", f"${breakeven_high:.2f}")
     
-    # Download materials
+    # -----------------------------------------------------------
+    # Recursos Descargables
+    # -----------------------------------------------------------
     st.sidebar.markdown("---")
-    st.sidebar.subheader("📚 Options Resources")
+    st.sidebar.subheader("📚 Recursos sobre Opciones")
     
     options_code = """
-# Options Pricing and Greeks
+# Cálculo de Opciones y Griegas - Ejemplo en Python
 
 import numpy as np
 from scipy.stats import norm
 
 def black_scholes_call(S, K, T, r, sigma):
-    '''Black-Scholes call option price'''
     d1 = (np.log(S / K) + (r + 0.5 * sigma ** 2) * T) / (sigma * np.sqrt(T))
     d2 = d1 - sigma * np.sqrt(T)
-    
-    call_price = S * norm.cdf(d1) - K * np.exp(-r * T) * norm.cdf(d2)
-    return call_price
+    return S * norm.cdf(d1) - K * np.exp(-r * T) * norm.cdf(d2)
 
-def option_delta(S, K, T, r, sigma, option_type='call'):
-    '''Calculate option delta'''
+def option_delta(S, K, T, r, sigma, tipo='call'):
     d1 = (np.log(S / K) + (r + 0.5 * sigma ** 2) * T) / (sigma * np.sqrt(T))
-    
-    if option_type == 'call':
-        return norm.cdf(d1)
-    else:
-        return norm.cdf(d1) - 1
-
-def option_gamma(S, K, T, r, sigma):
-    '''Calculate option gamma'''
-    d1 = (np.log(S / K) + (r + 0.5 * sigma ** 2) * T) / (sigma * np.sqrt(T))
-    return norm.pdf(d1) / (S * sigma * np.sqrt(T))
-
-# Example usage
-call_price = black_scholes_call(100, 100, 0.25, 0.05, 0.2)  # $5.91
-delta = option_delta(100, 100, 0.25, 0.05, 0.2, 'call')     # 0.605
+    return norm.cdf(d1) if tipo == 'call' else norm.cdf(d1) - 1
 """
     
     st.sidebar.download_button(
-        label="💻 Download Options Code",
+        label="💻 Descargar código de opciones",
         data=options_code,
-        file_name="options_pricing.py",
+        file_name="valoracion_opciones.py",
         mime="text/python"
     )

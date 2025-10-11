@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 from utils.financial_functions import FinancialCalculations
 from utils.progress_tracker import ProgressTracker
 
+
 def run_class():
     st.header("Clase 2: Valor del Dinero en el Tiempo")
     

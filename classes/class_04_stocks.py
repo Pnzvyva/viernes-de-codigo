@@ -8,410 +8,447 @@ from utils.progress_tracker import ProgressTracker
 
 def run_class():
     st.header("Clase 4: Valoración de Acciones")
-    
+
     progress_tracker = st.session_state.progress_tracker
-    
-    tab1, tab2, tab3, tab4 = st.tabs(["Modelos de Valoración", "Modelos de Dividendos", "Análisis DCF", "Valoración Comparativa"])
-    
+
+    tab1, tab2, tab3, tab4 = st.tabs([
+        "Modelos de Valoración", 
+        "Modelos de Dividendos", 
+        "Análisis DCF", 
+        "Valoración Comparativa"
+    ])
+
+    # -------------------------------------------------------------------------
+    # TAB 1 – Fundamentos de Valoración
+    # -------------------------------------------------------------------------
     with tab1:
-        st.subheader("Fundamentos de Valoración de Acciones")
-        
+        st.subheader("Fundamentos de la Valoración de Acciones")
+
         st.write("""
-        La valoración de acciones es el proceso de determinar el valor intrínseco de las acciones de una empresa. 
-        A diferencia de los bonos con flujos de efectivo fijos, las acciones representan propiedad en una empresa con retornos variables.
+        La valoración de acciones es el proceso de determinar el valor intrínseco de los títulos de una empresa. 
+        A diferencia de los bonos, que tienen flujos de efectivo fijos, las acciones representan propiedad en la empresa 
+        y sus retornos dependen del desempeño y las expectativas del mercado.
         """)
-        
+
         col1, col2 = st.columns(2)
-        
+
         with col1:
             st.write("""
-            **Key Valuation Approaches:**
-            - **Intrinsic Value**: Based on fundamentals
-            - **Relative Value**: Compared to peers
-            - **Absolute Value**: DCF and dividend models
-            - **Market Value**: Current trading price
+            **Enfoques Clave de Valoración:**
+            - **Valor Intrínseco:** Basado en los fundamentos financieros.
+            - **Valor Relativo:** Comparado con empresas similares.
+            - **Valor Absoluto:** Basado en modelos DCF y de dividendos.
+            - **Valor de Mercado:** Precio actual en el mercado.
             """)
-        
+
         with col2:
             st.write("""
-            **Factors Affecting Stock Price:**
-            - Company earnings and growth
-            - Industry conditions
-            - Economic environment
-            - Market sentiment
-            - Interest rates
+            **Factores que Afectan el Precio de una Acción:**
+            - Ganancias y crecimiento de la empresa.
+            - Condiciones de la industria.
+            - Situación económica general.
+            - Sentimiento del mercado.
+            - Tasas de interés.
             """)
-        
-        st.subheader("Valuation Methods Overview")
-        
-        methods = {
-            "Dividend Discount Model (DDM)": {
-                "Description": "Values stock based on present value of expected dividends",
-                "Best For": "Dividend-paying mature companies",
-                "Formula": "P = D₁/(r-g) for constant growth"
+
+        st.subheader("Resumen de Métodos de Valoración")
+
+        metodos = {
+            "Modelo de Descuento de Dividendos (DDM)": {
+                "Descripción": "Valora la acción con base en el valor presente de los dividendos esperados.",
+                "Adecuado Para": "Empresas maduras que pagan dividendos.",
+                "Fórmula": "P = D₁ / (r - g) para crecimiento constante."
             },
-            "Discounted Cash Flow (DCF)": {
-                "Description": "Values stock based on free cash flows to equity",
-                "Best For": "Companies with predictable cash flows",
-                "Formula": "Sum of discounted future cash flows"
+            "Flujo de Caja Descontado (DCF)": {
+                "Descripción": "Valora la acción según los flujos de caja libres descontados al presente.",
+                "Adecuado Para": "Empresas con flujos de caja predecibles.",
+                "Fórmula": "Suma de los flujos de caja futuros descontados."
             },
-            "Price Multiples": {
-                "Description": "Values stock relative to financial metrics (P/E, P/B, etc.)",
-                "Best For": "Quick comparison with peer companies",
-                "Formula": "Price = Multiple × Metric"
+            "Múltiplos de Mercado": {
+                "Descripción": "Compara la acción con métricas financieras como P/U o P/VL.",
+                "Adecuado Para": "Comparaciones rápidas entre compañías.",
+                "Fórmula": "Precio = Múltiplo × Métrica."
             }
         }
-        
-        for method, details in methods.items():
-            with st.expander(f"📊 {method}"):
+
+        for metodo, detalles in metodos.items():
+            with st.expander(f"📊 {metodo}"):
                 col1, col2 = st.columns(2)
                 with col1:
-                    st.write(f"**Description:** {details['Description']}")
-                    st.write(f"**Best For:** {details['Best For']}")
+                    st.write(f"**Descripción:** {detalles['Descripción']}")
+                    st.write(f"**Adecuado Para:** {detalles['Adecuado Para']}")
                 with col2:
-                    st.write(f"**Formula:** {details['Formula']}")
-    
+                    st.write(f"**Fórmula:** {detalles['Fórmula']}")
+
+    # -------------------------------------------------------------------------
+    # TAB 2 – Modelos de Dividendos
+    # -------------------------------------------------------------------------
     with tab2:
-        st.subheader("Dividend Discount Models")
-        
-        model_type = st.selectbox("Select Dividend Model:", 
-                                 ["Gordon Growth Model", "Two-Stage Growth", "Zero Growth"])
-        
-        if model_type == "Gordon Growth Model":
-            st.write("**Gordon Growth Model (Constant Growth DDM)**")
+        st.subheader("Modelos de Descuento de Dividendos (DDM)")
+
+        tipo_modelo = st.selectbox(
+            "Selecciona el modelo de dividendos:",
+            ["Modelo de Crecimiento Constante (Gordon)", "Crecimiento en Dos Etapas", "Crecimiento Cero"]
+        )
+
+        # --- Modelo de Crecimiento Constante ---
+        if tipo_modelo == "Modelo de Crecimiento Constante (Gordon)":
+            st.write("**Modelo de Gordon (Crecimiento Constante)**")
             st.latex(r"P_0 = \frac{D_1}{r - g}")
-            st.write("Where: P₀ = Current price, D₁ = Next year's dividend, r = required return, g = growth rate")
-            
+            st.write("Donde: P₀ = Precio actual, D₁ = Dividendo del próximo año, r = tasa requerida, g = tasa de crecimiento.")
+
             col1, col2, col3 = st.columns(3)
             with col1:
-                current_dividend = st.number_input("Current Dividend (D₀) ($)", value=2.00, min_value=0.0)
-                growth_rate = st.number_input("Growth Rate (g) (%)", value=5.0, min_value=0.0, max_value=50.0)
+                dividendo_actual = st.number_input("Dividendo actual (D₀) ($)", value=2.00, min_value=0.0)
+                tasa_crecimiento = st.number_input("Tasa de crecimiento (g) (%)", value=5.0, min_value=0.0, max_value=50.0)
             with col2:
-                required_return = st.number_input("Required Return (r) (%)", value=10.0, min_value=0.1, max_value=50.0)
+                tasa_requerida = st.number_input("Tasa requerida de retorno (r) (%)", value=10.0, min_value=0.1, max_value=50.0)
             with col3:
-                st.write("")  # Spacing
-                
-            if required_return/100 > growth_rate/100:
-                next_dividend = current_dividend * (1 + growth_rate/100)
-                intrinsic_value = next_dividend / (required_return/100 - growth_rate/100)
-                
-                st.success(f"Intrinsic Value: ${intrinsic_value:.2f}")
-                st.info(f"Next Year's Dividend (D₁): ${next_dividend:.2f}")
-                
-                # Sensitivity analysis
-                if st.button("Show Sensitivity Analysis"):
-                    growth_range = np.linspace(max(0, growth_rate-3), min(required_return-0.1, growth_rate+3), 20)
-                    values = []
-                    
-                    for g in growth_range:
-                        if g < required_return:
-                            d1 = current_dividend * (1 + g/100)
-                            value = d1 / (required_return/100 - g/100)
-                            values.append(value)
+                st.write("")
+
+            if tasa_requerida / 100 > tasa_crecimiento / 100:
+                dividendo_siguiente = dividendo_actual * (1 + tasa_crecimiento / 100)
+                valor_intrinseco = dividendo_siguiente / (tasa_requerida / 100 - tasa_crecimiento / 100)
+
+                st.success(f"Valor Intrínseco: ${valor_intrinseco:.2f}")
+                st.info(f"Dividendo del próximo año (D₁): ${dividendo_siguiente:.2f}")
+
+                if st.button("Mostrar análisis de sensibilidad"):
+                    rango_g = np.linspace(max(0, tasa_crecimiento - 3), min(tasa_requerida - 0.1, tasa_crecimiento + 3), 20)
+                    valores = []
+
+                    for g in rango_g:
+                        if g < tasa_requerida:
+                            d1 = dividendo_actual * (1 + g / 100)
+                            valor = d1 / (tasa_requerida / 100 - g / 100)
+                            valores.append(valor)
                         else:
-                            values.append(np.nan)
-                    
-                    df_sensitivity = pd.DataFrame({
-                        'Growth Rate (%)': growth_range,
-                        'Intrinsic Value ($)': values
+                            valores.append(np.nan)
+
+                    df_sensibilidad = pd.DataFrame({
+                        'Tasa de Crecimiento (%)': rango_g,
+                        'Valor Intrínseco ($)': valores
                     })
-                    
-                    fig = px.line(df_sensitivity, x='Growth Rate (%)', y='Intrinsic Value ($)', 
-                                 title='Stock Value Sensitivity to Growth Rate')
-                    fig.add_vline(x=growth_rate, line_dash="dash", annotation_text="Base Case")
+
+                    fig = px.line(df_sensibilidad, x='Tasa de Crecimiento (%)', y='Valor Intrínseco ($)',
+                                  title='Sensibilidad del Valor ante cambios en la Tasa de Crecimiento')
+                    fig.add_vline(x=tasa_crecimiento, line_dash="dash", annotation_text="Caso Base")
                     st.plotly_chart(fig, use_container_width=True)
             else:
-                st.error("Growth rate must be less than required return for the model to be valid!")
-        
-        elif model_type == "Two-Stage Growth":
-            st.write("**Two-Stage Growth Model**")
-            st.write("Allows for different growth rates in two periods")
-            
+                st.error("¡La tasa de crecimiento debe ser menor que la tasa requerida!")
+
+        # --- Modelo de Dos Etapas ---
+        elif tipo_modelo == "Crecimiento en Dos Etapas":
+            st.write("**Modelo de Crecimiento en Dos Etapas**")
+            st.write("Permite distintas tasas de crecimiento en dos periodos.")
+
             col1, col2 = st.columns(2)
             with col1:
-                current_dividend = st.number_input("Current Dividend ($)", value=1.50, min_value=0.0, key="2stage_d0")
-                high_growth_rate = st.number_input("High Growth Rate (%)", value=15.0, min_value=0.0, key="2stage_g1")
-                high_growth_years = st.number_input("High Growth Period (years)", value=5, min_value=1, max_value=20, key="2stage_years")
+                dividendo_actual = st.number_input("Dividendo actual ($)", value=1.50, min_value=0.0, key="2stage_d0")
+                tasa_alta = st.number_input("Tasa de alto crecimiento (%)", value=15.0, min_value=0.0, key="2stage_g1")
+                años_alto_crecimiento = st.number_input("Periodo de alto crecimiento (años)", value=5, min_value=1, max_value=20, key="2stage_years")
             with col2:
-                stable_growth_rate = st.number_input("Stable Growth Rate (%)", value=3.0, min_value=0.0, key="2stage_g2")
-                required_return = st.number_input("Required Return (%)", value=12.0, min_value=0.1, key="2stage_r")
-            
-            if required_return/100 > stable_growth_rate/100:
-                # Stage 1: High growth dividends
-                stage1_value = 0
-                dividends_stage1 = []
-                
-                for year in range(1, high_growth_years + 1):
-                    dividend = current_dividend * (1 + high_growth_rate/100) ** year
-                    pv_dividend = dividend / (1 + required_return/100) ** year
-                    stage1_value += pv_dividend
-                    dividends_stage1.append({'Year': year, 'Dividend': dividend, 'PV': pv_dividend})
-                
-                # Stage 2: Stable growth (terminal value)
-                terminal_dividend = current_dividend * (1 + high_growth_rate/100) ** high_growth_years * (1 + stable_growth_rate/100)
-                terminal_value = terminal_dividend / (required_return/100 - stable_growth_rate/100)
-                pv_terminal = terminal_value / (1 + required_return/100) ** high_growth_years
-                
-                total_value = stage1_value + pv_terminal
-                
-                st.success(f"Total Intrinsic Value: ${total_value:.2f}")
-                
+                tasa_estable = st.number_input("Tasa de crecimiento estable (%)", value=3.0, min_value=0.0, key="2stage_g2")
+                tasa_requerida = st.number_input("Tasa requerida (%)", value=12.0, min_value=0.1, key="2stage_r")
+
+            if tasa_requerida / 100 > tasa_estable / 100:
+                valor_etapa1 = 0
+                dividendos_etapa1 = []
+
+                for año in range(1, años_alto_crecimiento + 1):
+                    div = dividendo_actual * (1 + tasa_alta / 100) ** año
+                    vp = div / (1 + tasa_requerida / 100) ** año
+                    valor_etapa1 += vp
+                    dividendos_etapa1.append({'Año': año, 'Dividendo': div, 'VP': vp})
+
+                dividendo_terminal = dividendo_actual * (1 + tasa_alta / 100) ** años_alto_crecimiento * (1 + tasa_estable / 100)
+                valor_terminal = dividendo_terminal / (tasa_requerida / 100 - tasa_estable / 100)
+                vp_terminal = valor_terminal / (1 + tasa_requerida / 100) ** años_alto_crecimiento
+
+                valor_total = valor_etapa1 + vp_terminal
+
+                st.success(f"Valor Intrínseco Total: ${valor_total:.2f}")
+
                 col1, col2 = st.columns(2)
                 with col1:
-                    st.metric("Stage 1 Value", f"${stage1_value:.2f}")
-                    st.metric("Terminal Value", f"${terminal_value:.2f}")
+                    st.metric("Valor Etapa 1", f"${valor_etapa1:.2f}")
+                    st.metric("Valor Terminal", f"${valor_terminal:.2f}")
                 with col2:
-                    st.metric("PV of Terminal Value", f"${pv_terminal:.2f}")
-                    st.metric("Terminal Value %", f"{(pv_terminal/total_value)*100:.1f}%")
-                
-                # Show dividend projections
-                df_dividends = pd.DataFrame(dividends_stage1)
-                st.subheader("Dividend Projections")
-                st.dataframe(df_dividends, use_container_width=True)
+                    st.metric("VP del Valor Terminal", f"${vp_terminal:.2f}")
+                    st.metric("Porcentaje del Valor Terminal", f"{(vp_terminal / valor_total) * 100:.1f}%")
+
+                df_div = pd.DataFrame(dividendos_etapa1)
+                st.subheader("Proyección de Dividendos")
+                st.dataframe(df_div, use_container_width=True)
             else:
-                st.error("Required return must be greater than stable growth rate!")
-    
+                st.error("¡La tasa requerida debe ser mayor que la tasa estable!")
+
+        # --- Modelo de Crecimiento Cero ---
+        elif tipo_modelo == "Crecimiento Cero":
+            st.write("**Modelo de Dividendos sin Crecimiento (Crecimiento Cero)**")
+            st.latex(r"P_0 = \frac{D}{r}")
+            st.write("Donde: P₀ = Precio actual, D = Dividendo anual constante, r = tasa requerida.")
+
+            col1, col2 = st.columns(2)
+            with col1:
+                dividendo = st.number_input("Dividendo anual (D) ($)", value=3.00, min_value=0.0)
+            with col2:
+                tasa_requerida = st.number_input("Tasa requerida (r) (%)", value=8.0, min_value=0.1, max_value=50.0)
+
+            if tasa_requerida > 0:
+                valor_intrinseco = dividendo / (tasa_requerida / 100)
+                st.success(f"Valor Intrínseco (P₀): ${valor_intrinseco:.2f}")
+
+                if st.button("Mostrar sensibilidad ante la tasa requerida"):
+                    r_range = np.linspace(max(0.1, tasa_requerida - 4), tasa_requerida + 4, 25)
+                    valores = [dividendo / (r / 100) for r in r_range]
+
+                    df_sens = pd.DataFrame({
+                        'Tasa Requerida (%)': r_range,
+                        'Valor Intrínseco ($)': valores
+                    })
+
+                    fig = px.line(df_sens, x='Tasa Requerida (%)', y='Valor Intrínseco ($)',
+                                  title='Sensibilidad del Modelo de Crecimiento Cero',
+                                  markers=True)
+                    fig.add_vline(x=tasa_requerida, line_dash="dash", annotation_text="Caso Base")
+                    st.plotly_chart(fig, use_container_width=True)
+
+    # -------------------------------------------------------------------------
+    # TAB 3 – Análisis DCF
+    # -------------------------------------------------------------------------
     with tab3:
-        st.subheader("Discounted Cash Flow (DCF) Analysis")
-        
+        st.subheader("Análisis de Flujo de Caja Descontado (DCF)")
+
         st.write("""
-        DCF valuation determines intrinsic value by discounting future free cash flows to present value.
-        This method is fundamental for valuing companies based on their ability to generate cash.
+        El método DCF determina el valor intrínseco descontando los flujos de caja futuros al valor presente.
+        Este enfoque es esencial para valorar empresas según su capacidad de generar efectivo.
         """)
-        
-        # DCF Calculator
-        st.write("**Free Cash Flow to Equity (FCFE) Model**")
-        
+
+        st.write("**Modelo de Flujo de Caja Libre para el Accionista (FCFE)**")
+
         col1, col2 = st.columns(2)
         with col1:
-            current_fcfe = st.number_input("Current FCFE ($ millions)", value=100.0, min_value=0.0)
-            growth_years = st.number_input("High Growth Period (years)", value=5, min_value=1, max_value=15)
-            high_growth = st.number_input("High Growth Rate (%)", value=12.0, min_value=0.0)
+            fcfe_actual = st.number_input("FCFE actual ($ millones)", value=100.0, min_value=0.0)
+            años_crecimiento = st.number_input("Periodo de alto crecimiento (años)", value=5, min_value=1, max_value=15)
+            crecimiento_alto = st.number_input("Tasa de crecimiento alto (%)", value=12.0, min_value=0.0)
         with col2:
-            terminal_growth = st.number_input("Terminal Growth Rate (%)", value=3.0, min_value=0.0, max_value=10.0)
-            discount_rate = st.number_input("Discount Rate (%)", value=10.0, min_value=1.0)
-            shares_outstanding = st.number_input("Shares Outstanding (millions)", value=50.0, min_value=0.1)
-        
-        if discount_rate/100 > terminal_growth/100:
-            if st.button("Calculate DCF Value"):
-                # High growth period cash flows
-                pv_growth_cf = 0
-                cash_flows = []
-                
-                for year in range(1, growth_years + 1):
-                    cf = current_fcfe * (1 + high_growth/100) ** year
-                    pv_cf = cf / (1 + discount_rate/100) ** year
-                    pv_growth_cf += pv_cf
-                    cash_flows.append({
-                        'Year': year,
-                        'FCFE': cf,
-                        'Present Value': pv_cf
-                    })
-                
-                # Terminal value
-                terminal_cf = current_fcfe * (1 + high_growth/100) ** growth_years * (1 + terminal_growth/100)
-                terminal_value = terminal_cf / (discount_rate/100 - terminal_growth/100)
-                pv_terminal = terminal_value / (1 + discount_rate/100) ** growth_years
-                
-                # Total equity value
-                total_equity_value = pv_growth_cf + pv_terminal
-                value_per_share = total_equity_value / shares_outstanding
-                
-                # Results
-                st.subheader("DCF Valuation Results")
-                
+            crecimiento_terminal = st.number_input("Tasa de crecimiento terminal (%)", value=3.0, min_value=0.0, max_value=10.0)
+            tasa_descuento = st.number_input("Tasa de descuento (%)", value=10.0, min_value=1.0)
+            acciones = st.number_input("Acciones en circulación (millones)", value=50.0, min_value=0.1)
+
+        if tasa_descuento / 100 > crecimiento_terminal / 100:
+            if st.button("Calcular Valor DCF"):
+                pv_crecimiento = 0
+                flujos = []
+
+                for año in range(1, años_crecimiento + 1):
+                    cf = fcfe_actual * (1 + crecimiento_alto / 100) ** año
+                    vp_cf = cf / (1 + tasa_descuento / 100) ** año
+                    pv_crecimiento += vp_cf
+                    flujos.append({'Año': año, 'FCFE': cf, 'Valor Presente': vp_cf})
+
+                cf_terminal = fcfe_actual * (1 + crecimiento_alto / 100) ** años_crecimiento * (1 + crecimiento_terminal / 100)
+                valor_terminal = cf_terminal / (tasa_descuento / 100 - crecimiento_terminal / 100)
+                vp_terminal = valor_terminal / (1 + tasa_descuento / 100) ** años_crecimiento
+
+                valor_total = pv_crecimiento + vp_terminal
+                valor_por_accion = valor_total / acciones
+
+                st.subheader("Resultados de Valoración DCF")
+
                 col1, col2, col3 = st.columns(3)
                 with col1:
-                    st.metric("Total Equity Value", f"${total_equity_value:.1f}M")
-                    st.metric("Growth Period Value", f"${pv_growth_cf:.1f}M")
+                    st.metric("Valor Total del Patrimonio", f"${valor_total:.1f}M")
+                    st.metric("Valor del Periodo de Crecimiento", f"${pv_crecimiento:.1f}M")
                 with col2:
-                    st.metric("Terminal Value", f"${terminal_value:.1f}M")
-                    st.metric("PV of Terminal Value", f"${pv_terminal:.1f}M")
+                    st.metric("Valor Terminal", f"${valor_terminal:.1f}M")
+                    st.metric("VP del Valor Terminal", f"${vp_terminal:.1f}M")
                 with col3:
-                    st.metric("Value Per Share", f"${value_per_share:.2f}")
-                    st.metric("Terminal Value %", f"{(pv_terminal/total_equity_value)*100:.1f}%")
-                
-                # Cash flow table
-                df_cf = pd.DataFrame(cash_flows)
-                st.subheader("Projected Free Cash Flows")
+                    st.metric("Valor por Acción", f"${valor_por_accion:.2f}")
+                    st.metric("Porcentaje del Valor Terminal", f"{(vp_terminal / valor_total) * 100:.1f}%")
+
+                df_cf = pd.DataFrame(flujos)
+                st.subheader("Proyección de Flujos de Caja")
                 st.dataframe(df_cf, use_container_width=True)
-                
-                # Visualization
-                years = list(range(1, growth_years + 1))
-                fcfe_values = [current_fcfe * (1 + high_growth/100) ** year for year in years]
-                
-                fig = px.bar(x=years, y=fcfe_values, title="Projected FCFE Growth")
-                fig.update_layout(xaxis_title="Year", yaxis_title="FCFE ($ millions)")
+
+                años = list(range(1, años_crecimiento + 1))
+                fcfe_values = [fcfe_actual * (1 + crecimiento_alto / 100) ** año for año in años]
+
+                fig = px.bar(x=años, y=fcfe_values, title="Crecimiento Proyectado del FCFE")
+                fig.update_layout(xaxis_title="Año", yaxis_title="FCFE ($ millones)")
                 st.plotly_chart(fig, use_container_width=True)
         else:
-            st.error("Discount rate must be greater than terminal growth rate!")
+            st.error("¡La tasa de descuento debe ser mayor que la tasa de crecimiento terminal!")
     
     with tab4:
-        st.subheader("Comparative Valuation (Multiples)")
+        st.subheader("Valoración Comparativa (Múltiplos)")
         
         st.write("""
-        Relative valuation uses market multiples to estimate stock value based on comparable companies.
-        Common multiples include P/E, P/B, P/S, and EV/EBITDA ratios.
+        La valoración relativa utiliza múltiplos de mercado para estimar el valor de una acción 
+        con base en compañías comparables. 
+        Los múltiplos más comunes incluyen P/U, P/VL, P/Ventas y EV/EBITDA.
         """)
         
-        multiple_type = st.selectbox("Select Multiple:", 
-                                   ["Price-to-Earnings (P/E)", "Price-to-Book (P/B)", "Price-to-Sales (P/S)"])
+        tipo_multiple = st.selectbox(
+            "Selecciona el múltiplo:", 
+            ["Precio/Utilidad (P/U)", "Precio/Valor en Libros (P/VL)", "Precio/Ventas (P/V)"]
+        )
         
-        if multiple_type == "Price-to-Earnings (P/E)":
-            st.write("**P/E Multiple Valuation**")
-            st.latex(r"Target\ Price = EPS \times P/E\ Multiple")
+        # --- Múltiplo P/U ---
+        if tipo_multiple == "Precio/Utilidad (P/U)":
+            st.write("**Valoración mediante el múltiplo P/U**")
+            st.latex(r"Precio\ Objetivo = EPS \times P/U")
             
             col1, col2 = st.columns(2)
             with col1:
-                current_eps = st.number_input("Current EPS ($)", value=5.00, min_value=0.01)
-                eps_growth = st.number_input("EPS Growth (%)", value=8.0, min_value=-50.0, max_value=100.0)
-                forward_eps = current_eps * (1 + eps_growth/100)
-                st.info(f"Forward EPS: ${forward_eps:.2f}")
+                eps_actual = st.number_input("EPS actual ($)", value=5.00, min_value=0.01)
+                crecimiento_eps = st.number_input("Crecimiento del EPS (%)", value=8.0, min_value=-50.0, max_value=100.0)
+                eps_proyectado = eps_actual * (1 + crecimiento_eps / 100)
+                st.info(f"EPS proyectado: ${eps_proyectado:.2f}")
             
             with col2:
-                industry_pe = st.number_input("Industry Average P/E", value=15.0, min_value=1.0, max_value=100.0)
-                company_pe = st.number_input("Company's Historical P/E", value=18.0, min_value=1.0, max_value=100.0)
+                pe_industria = st.number_input("P/U promedio de la industria", value=15.0, min_value=1.0, max_value=100.0)
+                pe_empresa = st.number_input("P/U histórico de la empresa", value=18.0, min_value=1.0, max_value=100.0)
             
-            if st.button("Calculate P/E Valuation"):
-                industry_value = forward_eps * industry_pe
-                historical_value = forward_eps * company_pe
+            if st.button("Calcular valoración P/U"):
+                valor_industria = eps_proyectado * pe_industria
+                valor_historico = eps_proyectado * pe_empresa
                 
                 col1, col2 = st.columns(2)
                 with col1:
-                    st.metric("Value using Industry P/E", f"${industry_value:.2f}")
+                    st.metric("Valor usando P/U de la industria", f"${valor_industria:.2f}")
                 with col2:
-                    st.metric("Value using Historical P/E", f"${historical_value:.2f}")
+                    st.metric("Valor usando P/U histórico", f"${valor_historico:.2f}")
                 
-                # P/E sensitivity analysis
-                pe_range = np.linspace(max(1, industry_pe - 5), industry_pe + 10, 30)
-                values = [forward_eps * pe for pe in pe_range]
+                # Análisis de sensibilidad
+                rango_pe = np.linspace(max(1, pe_industria - 5), pe_industria + 10, 30)
+                valores = [eps_proyectado * pe for pe in rango_pe]
                 
                 df_pe = pd.DataFrame({
-                    'P/E Multiple': pe_range,
-                    'Stock Value': values
+                    'Múltiplo P/U': rango_pe,
+                    'Valor de la Acción ($)': valores
                 })
                 
-                fig = px.line(df_pe, x='P/E Multiple', y='Stock Value', 
-                             title='Stock Value vs P/E Multiple')
-                fig.add_vline(x=industry_pe, line_dash="dash", annotation_text="Industry Avg")
-                fig.add_vline(x=company_pe, line_dash="dot", annotation_text="Historical")
+                fig = px.line(df_pe, x='Múltiplo P/U', y='Valor de la Acción ($)', 
+                            title='Valor de la Acción vs Múltiplo P/U')
+                fig.add_vline(x=pe_industria, line_dash="dash", annotation_text="Promedio Industria")
+                fig.add_vline(x=pe_empresa, line_dash="dot", annotation_text="Histórico")
                 st.plotly_chart(fig, use_container_width=True)
         
-        elif multiple_type == "Price-to-Book (P/B)":
-            st.write("**P/B Multiple Valuation**")
+        # --- Múltiplo P/VL ---
+        elif tipo_multiple == "Precio/Valor en Libros (P/VL)":
+            st.write("**Valoración mediante el múltiplo P/VL**")
             
             col1, col2 = st.columns(2)
             with col1:
-                book_value_per_share = st.number_input("Book Value per Share ($)", value=20.00, min_value=0.01)
+                valor_libros = st.number_input("Valor en libros por acción ($)", value=20.00, min_value=0.01)
             with col2:
-                industry_pb = st.number_input("Industry Average P/B", value=2.5, min_value=0.1, max_value=20.0)
+                pb_industria = st.number_input("P/VL promedio de la industria", value=2.5, min_value=0.1, max_value=20.0)
             
-            pb_value = book_value_per_share * industry_pb
-            st.success(f"Estimated Value using P/B: ${pb_value:.2f}")
+            valor_estimado = valor_libros * pb_industria
+            st.success(f"Valor estimado usando P/VL: ${valor_estimado:.2f}")
         
-        # Comparative analysis table
-        st.subheader("Multiple Comparison Analysis")
+        # --- Análisis comparativo ---
+        st.subheader("Análisis Comparativo de Múltiplos")
         
-        if st.button("Generate Comparison Table"):
-            # Sample peer comparison data
-            peers_data = {
-                'Company': ['Target Co.', 'Peer A', 'Peer B', 'Peer C', 'Industry Avg'],
-                'P/E Ratio': [0, 14.2, 16.8, 13.5, 15.0],
-                'P/B Ratio': [0, 2.1, 2.8, 1.9, 2.3],
-                'P/S Ratio': [0, 1.8, 2.2, 1.5, 1.9],
+        if st.button("Generar tabla comparativa"):
+            datos_comparativos = {
+                'Empresa': ['Compañía Objetivo', 'Competidor A', 'Competidor B', 'Competidor C', 'Promedio Industria'],
+                'P/U': [0, 14.2, 16.8, 13.5, 15.0],
+                'P/VL': [0, 2.1, 2.8, 1.9, 2.3],
+                'P/Ventas': [0, 1.8, 2.2, 1.5, 1.9],
                 'ROE (%)': [12.5, 11.2, 15.1, 9.8, 12.1],
-                'Growth (%)': [8.0, 7.2, 9.5, 5.8, 7.5]
+                'Crecimiento (%)': [8.0, 7.2, 9.5, 5.8, 7.5]
             }
             
-            df_peers = pd.DataFrame(peers_data)
-            st.dataframe(df_peers, use_container_width=True)
+            df_comparativo = pd.DataFrame(datos_comparativos)
+            st.dataframe(df_comparativo, use_container_width=True)
             
-            st.write("**Valuation Summary using Industry Averages:**")
-            if 'forward_eps' in locals():
-                pe_val = forward_eps * 15.0
-                st.write(f"P/E Valuation: ${pe_val:.2f}")
+            st.write("**Resumen de valoración usando promedios de la industria:**")
+            if 'eps_proyectado' in locals():
+                valor_pe = eps_proyectado * 15.0
+                st.write(f"Valor según P/U promedio: ${valor_pe:.2f}")
         
-        # Practice exercise
-        st.subheader("Valuation Exercise")
+        # --- Ejercicio práctico ---
+        st.subheader("Ejercicio de Valoración")
         
         st.write("""
-        **Exercise: Value the following company**
+        **Ejercicio: Valora la siguiente empresa**
         
-        Company Data:
-        - Current EPS: $4.00
-        - Expected EPS Growth: 10%
-        - Book Value per Share: $25.00
-        - Industry P/E: 16.0x
-        - Industry P/B: 2.2x
+        Datos de la empresa:
+        - EPS actual: $4.00  
+        - Crecimiento esperado del EPS: 10%  
+        - Valor en libros por acción: $25.00  
+        - P/U de la industria: 16.0x  
+        - P/VL de la industria: 2.2x  
         """)
         
-        exercise_pe = st.number_input("Your P/E Valuation ($):", min_value=0.0, format="%.2f", key="ex_pe")
-        exercise_pb = st.number_input("Your P/B Valuation ($):", min_value=0.0, format="%.2f", key="ex_pb")
+        val_pe_usuario = st.number_input("Tu valoración P/U ($):", min_value=0.0, format="%.2f", key="ex_pe")
+        val_pb_usuario = st.number_input("Tu valoración P/VL ($):", min_value=0.0, format="%.2f", key="ex_pb")
         
-        if st.button("Check Exercise"):
-            correct_eps = 4.00 * 1.10
-            correct_pe_val = correct_eps * 16.0
-            correct_pb_val = 25.00 * 2.2
+        if st.button("Verificar ejercicio"):
+            eps_correcto = 4.00 * 1.10
+            val_pe_correcto = eps_correcto * 16.0
+            val_pb_correcto = 25.00 * 2.2
             
-            pe_correct = abs(exercise_pe - correct_pe_val) < 2.0
-            pb_correct = abs(exercise_pb - correct_pb_val) < 2.0
+            pe_ok = abs(val_pe_usuario - val_pe_correcto) < 2.0
+            pb_ok = abs(val_pb_usuario - val_pb_correcto) < 2.0
             
-            if pe_correct:
-                st.success(f"✅ P/E Valuation Correct: ${correct_pe_val:.2f}")
+            if pe_ok:
+                st.success(f"✅ Valoración P/U correcta: ${val_pe_correcto:.2f}")
             else:
-                st.error(f"❌ P/E Valuation Incorrect. Correct answer: ${correct_pe_val:.2f}")
+                st.error(f"❌ Valoración P/U incorrecta. Respuesta correcta: ${val_pe_correcto:.2f}")
             
-            if pb_correct:
-                st.success(f"✅ P/B Valuation Correct: ${correct_pb_val:.2f}")
+            if pb_ok:
+                st.success(f"✅ Valoración P/VL correcta: ${val_pb_correcto:.2f}")
             else:
-                st.error(f"❌ P/B Valuation Incorrect. Correct answer: ${correct_pb_val:.2f}")
+                st.error(f"❌ Valoración P/VL incorrecta. Respuesta correcta: ${val_pb_correcto:.2f}")
             
-            if pe_correct and pb_correct:
-                progress_tracker.mark_class_completed("Class 4: Stock Valuation")
-                progress_tracker.set_class_score("Class 4: Stock Valuation", 100)
+            if pe_ok and pb_ok:
+                progress_tracker.mark_class_completed("Clase 4: Valoración de Acciones")
+                progress_tracker.set_class_score("Clase 4: Valoración de Acciones", 100)
                 st.balloons()
-                st.success("🎉 Excellent! You've mastered stock valuation!")
-    
-    # Download resources
-    st.sidebar.markdown("---")
-    st.sidebar.subheader("📚 Valuation Resources")
-    
-    valuation_code = """
-# Stock Valuation Models
+                st.success("🎉 ¡Excelente! ¡Has dominado la valoración de acciones!")
+        
+        # --- Recursos descargables ---
+        st.sidebar.markdown("---")
+        st.sidebar.subheader("📚 Recursos de Valoración")
+        
+        valuation_code = """
+    # Modelos de Valoración de Acciones
 
-def gordon_growth_model(dividend, growth_rate, required_return):
-    '''Gordon Growth Model'''
-    if required_return <= growth_rate:
-        return None  # Invalid inputs
-    
-    next_dividend = dividend * (1 + growth_rate)
-    return next_dividend / (required_return - growth_rate)
+    def modelo_gordon(dividendo, tasa_crecimiento, tasa_requerida):
+        '''Modelo de Gordon'''
+        if tasa_requerida <= tasa_crecimiento:
+            return None  # Datos inválidos
+        
+        dividendo_siguiente = dividendo * (1 + tasa_crecimiento)
+        return dividendo_siguiente / (tasa_requerida - tasa_crecimiento)
 
-def two_stage_growth(current_div, high_growth, years, stable_growth, required_return):
-    '''Two-stage dividend growth model'''
-    
-    # Stage 1: High growth
-    stage1_value = 0
-    for year in range(1, years + 1):
-        dividend = current_div * (1 + high_growth) ** year
-        pv = dividend / (1 + required_return) ** year
-        stage1_value += pv
-    
-    # Stage 2: Stable growth (terminal value)
-    terminal_dividend = current_div * (1 + high_growth) ** years * (1 + stable_growth)
-    terminal_value = terminal_dividend / (required_return - stable_growth)
-    pv_terminal = terminal_value / (1 + required_return) ** years
-    
-    return stage1_value + pv_terminal
+    def crecimiento_dos_etapas(dividendo_actual, crecimiento_alto, años, crecimiento_estable, tasa_requerida):
+        '''Modelo de Crecimiento en Dos Etapas'''
+        
+        valor_etapa1 = 0
+        for año in range(1, años + 1):
+            dividendo = dividendo_actual * (1 + crecimiento_alto) ** año
+            vp = dividendo / (1 + tasa_requerida) ** año
+            valor_etapa1 += vp
+        
+        dividendo_terminal = dividendo_actual * (1 + crecimiento_alto) ** años * (1 + crecimiento_estable)
+        valor_terminal = dividendo_terminal / (tasa_requerida - crecimiento_estable)
+        vp_terminal = valor_terminal / (1 + tasa_requerida) ** años
+        
+        return valor_etapa1 + vp_terminal
 
-# Example usage
-value = gordon_growth_model(2.0, 0.05, 0.10)  # $42.00
-two_stage_value = two_stage_growth(1.5, 0.15, 5, 0.03, 0.12)
-"""
-    
-    st.sidebar.download_button(
-        label="💻 Download Valuation Code",
-        data=valuation_code,
-        file_name="stock_valuation.py",
-        mime="text/python"
-    )
+    # Ejemplo de uso
+    valor = modelo_gordon(2.0, 0.05, 0.10)  # $42.00
+    valor_dos_etapas = crecimiento_dos_etapas(1.5, 0.15, 5, 0.03, 0.12)
+    """
+        
+        st.sidebar.download_button(
+            label="💻 Descargar código de valoración",
+            data=valuation_code,
+            file_name="valoracion_acciones.py",
+            mime="text/python"
+        )

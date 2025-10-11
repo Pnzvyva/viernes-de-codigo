@@ -12,97 +12,102 @@ def run_class():
     
     progress_tracker = st.session_state.progress_tracker
     
-    tab1, tab2, tab3, tab4 = st.tabs(["Tipos de Riesgo", "Valor en Riesgo (VaR)", "Pruebas de Estrés", "Métricas de Riesgo"])
+    tab1, tab2, tab3, tab4 = st.tabs([
+        "Tipos de Riesgo", 
+        "Valor en Riesgo (VaR)", 
+        "Pruebas de Estrés", 
+        "Métricas de Riesgo"
+    ])
     
+    # === TAB 1: TIPOS DE RIESGO ===
     with tab1:
-        st.subheader("Understanding Financial Risk")
+        st.subheader("Comprendiendo el Riesgo Financiero")
         
         st.write("""
-        Risk management is the process of identifying, analyzing, and controlling threats to an organization's 
-        capital and earnings. In finance, risk comes in many forms and must be carefully measured and managed.
+        La gestión del riesgo es el proceso de identificar, analizar y controlar las amenazas
+        al capital y las ganancias de una organización. En finanzas, el riesgo toma muchas formas
+        y debe ser cuidadosamente medido y administrado.
         """)
         
         col1, col2 = st.columns(2)
         
         with col1:
             st.write("""
-            **Market Risk:**
-            - Interest rate risk
-            - Equity price risk
-            - Currency risk
-            - Commodity risk
-            - Volatility risk
+            **Riesgo de Mercado:**
+            - Riesgo de tasa de interés  
+            - Riesgo de precio de acciones  
+            - Riesgo cambiario  
+            - Riesgo de materias primas  
+            - Riesgo de volatilidad  
             """)
         
         with col2:
             st.write("""
-            **Credit Risk:**
-            - Default risk
-            - Credit spread risk
-            - Counterparty risk
-            - Settlement risk
+            **Riesgo de Crédito:**
+            - Riesgo de incumplimiento  
+            - Riesgo de diferencial crediticio  
+            - Riesgo de contraparte  
+            - Riesgo de liquidación  
             """)
         
         st.write("""
-        **Other Risk Types:**
-        - **Operational Risk**: Internal processes, systems, or human errors
-        - **Liquidity Risk**: Inability to meet short-term obligations
-        - **Legal Risk**: Losses from legal or regulatory issues
-        - **Reputation Risk**: Loss of confidence affecting business
+        **Otros Tipos de Riesgo:**
+        - **Riesgo Operacional:** errores humanos o de procesos internos  
+        - **Riesgo de Liquidez:** incapacidad de cumplir obligaciones de corto plazo  
+        - **Riesgo Legal:** pérdidas derivadas de sanciones o litigios  
+        - **Riesgo Reputacional:** pérdida de confianza del mercado o clientes  
         """)
         
-        st.subheader("Risk Measurement Framework")
+        st.subheader("Marco de Medición del Riesgo")
         
         risk_measures = {
-            "Standard Deviation": {
-                "Description": "Measures dispersion of returns around the mean",
-                "Formula": "σ = √(Σ(r - μ)² / (n-1))",
-                "Use Case": "Basic volatility measure"
+            "Desviación Estándar": {
+                "Descripción": "Mide la dispersión de los retornos alrededor de la media.",
+                "Fórmula": "σ = √(Σ(r - μ)² / (n-1))",
+                "Uso": "Medida básica de volatilidad."
             },
             "Beta": {
-                "Description": "Measures systematic risk relative to market",
-                "Formula": "β = Cov(r_asset, r_market) / Var(r_market)",
-                "Use Case": "Market risk assessment"
+                "Descripción": "Mide el riesgo sistemático relativo al mercado.",
+                "Fórmula": "β = Cov(r_activo, r_mercado) / Var(r_mercado)",
+                "Uso": "Evaluación de riesgo de mercado."
             },
-            "Value at Risk": {
-                "Description": "Maximum expected loss over given time horizon",
-                "Formula": "VaR = -Percentile(returns, α)",
-                "Use Case": "Risk limits and capital allocation"
+            "Valor en Riesgo": {
+                "Descripción": "Pérdida máxima esperada durante un horizonte de tiempo dado.",
+                "Fórmula": "VaR = -Percentil(retornos, α)",
+                "Uso": "Límites de riesgo y asignación de capital."
             },
-            "Expected Shortfall": {
-                "Description": "Expected loss beyond VaR threshold",
-                "Formula": "ES = E[Loss | Loss > VaR]",
-                "Use Case": "Tail risk measurement"
+            "Pérdida Esperada (ES)": {
+                "Descripción": "Pérdida promedio más allá del umbral de VaR.",
+                "Fórmula": "ES = E[Pérdida | Pérdida > VaR]",
+                "Uso": "Medición del riesgo en la cola de la distribución."
             }
         }
         
-        for measure, details in risk_measures.items():
-            with st.expander(f"📊 {measure}"):
+        for medida, detalles in risk_measures.items():
+            with st.expander(f"📊 {medida}"):
                 col1, col2 = st.columns(2)
                 with col1:
-                    st.write(f"**Description:** {details['Description']}")
-                    st.write(f"**Use Case:** {details['Use Case']}")
+                    st.write(f"**Descripción:** {detalles['Descripción']}")
+                    st.write(f"**Uso:** {detalles['Uso']}")
                 with col2:
-                    st.write(f"**Formula:** {details['Formula']}")
+                    st.write(f"**Fórmula:** {detalles['Fórmula']}")
         
-        # Risk-Return Visualization
-        st.subheader("Risk-Return Analysis")
+        # === Visualización Riesgo-Retorno ===
+        st.subheader("Análisis de Riesgo-Retorno")
         
-        if st.button("Generate Risk-Return Analysis"):
-            # Sample portfolio data
+        if st.button("Generar Análisis Riesgo-Retorno"):
             np.random.seed(42)
             n_portfolios = 1000
             n_assets = 4
             
-            # Generate random weights
+            # Pesos aleatorios
             weights = np.random.random((n_portfolios, n_assets))
             weights = weights / weights.sum(axis=1)[:, np.newaxis]
             
-            # Asset parameters
+            # Parámetros de activos
             expected_returns = np.array([0.08, 0.12, 0.15, 0.06])
             volatilities = np.array([0.12, 0.18, 0.25, 0.08])
             
-            # Correlation matrix
             correlation_matrix = np.array([
                 [1.0, 0.3, 0.2, -0.1],
                 [0.3, 1.0, 0.5, 0.0],
@@ -110,12 +115,9 @@ def run_class():
                 [-0.1, 0.0, 0.1, 1.0]
             ])
             
-            # Covariance matrix
             cov_matrix = np.outer(volatilities, volatilities) * correlation_matrix
             
-            # Calculate portfolio metrics
-            portfolio_returns = []
-            portfolio_risks = []
+            portfolio_returns, portfolio_risks = [], []
             
             for w in weights:
                 port_return = np.sum(w * expected_returns)
@@ -123,10 +125,8 @@ def run_class():
                 portfolio_returns.append(port_return * 100)
                 portfolio_risks.append(port_risk * 100)
             
-            # Create scatter plot
             fig = go.Figure()
             
-            # Color by Sharpe ratio
             risk_free_rate = 3.0
             sharpe_ratios = [(ret - risk_free_rate) / risk for ret, risk in zip(portfolio_returns, portfolio_risks)]
             
@@ -138,15 +138,14 @@ def run_class():
                     color=sharpe_ratios,
                     colorscale='Viridis',
                     size=6,
-                    colorbar=dict(title="Sharpe Ratio")
+                    colorbar=dict(title="Ratio de Sharpe")
                 ),
-                text=[f"Return: {ret:.1f}%<br>Risk: {risk:.1f}%<br>Sharpe: {sharpe:.2f}" 
+                text=[f"Retorno: {ret:.1f}%<br>Riesgo: {risk:.1f}%<br>Sharpe: {sharpe:.2f}" 
                       for ret, risk, sharpe in zip(portfolio_returns, portfolio_risks, sharpe_ratios)],
-                name='Portfolios'
+                name='Portafolios'
             ))
             
-            # Add individual assets
-            asset_names = ['Bonds', 'Large Cap', 'Small Cap', 'Cash']
+            asset_names = ['Bonos', 'Acciones Grandes', 'Acciones Pequeñas', 'Efectivo']
             fig.add_trace(go.Scatter(
                 x=volatilities * 100,
                 y=expected_returns * 100,
@@ -154,402 +153,363 @@ def run_class():
                 text=asset_names,
                 textposition="top center",
                 marker=dict(size=12, color='red'),
-                name='Individual Assets'
+                name='Activos Individuales'
             ))
             
             fig.update_layout(
-                title="Portfolio Risk-Return Analysis",
-                xaxis_title="Risk (Standard Deviation %)",
-                yaxis_title="Expected Return (%)",
+                title="Análisis Riesgo-Retorno del Portafolio",
+                xaxis_title="Riesgo (Desviación Estándar %)",
+                yaxis_title="Retorno Esperado (%)",
                 showlegend=True
             )
             
             st.plotly_chart(fig, use_container_width=True)
-    
+
+    # === TAB 2: VALOR EN RIESGO (VaR) ===
     with tab2:
-        st.subheader("Value at Risk (VaR)")
+        st.subheader("Valor en Riesgo (VaR)")
         
         st.write("""
-        Value at Risk (VaR) is a statistical measure that quantifies the level of financial risk 
-        within a firm, portfolio, or position over a specific time frame.
+        El Valor en Riesgo (VaR) es una medida estadística que cuantifica el nivel de riesgo financiero
+        de una empresa, portafolio o posición durante un período de tiempo específico.
         """)
         
-        with st.expander("📊 VaR Methods"):
+        with st.expander("📊 Métodos para Calcular VaR"):
             st.write("""
-            **1. Historical Method:** Uses actual historical returns
-            **2. Parametric Method:** Assumes normal distribution
-            **3. Monte Carlo Method:** Uses simulated scenarios
+            **1. Método Histórico:** utiliza los retornos históricos reales.  
+            **2. Método Paramétrico:** asume una distribución normal de los retornos.  
+            **3. Método Monte Carlo:** genera escenarios simulados aleatoriamente.  
             """)
         
-        var_method = st.selectbox("Select VaR Method:", 
-                                 ["Historical VaR", "Parametric VaR", "Monte Carlo VaR"])
+        var_method = st.selectbox("Selecciona el método de VaR:", 
+                                 ["VaR Histórico", "VaR Paramétrico", "VaR Monte Carlo"])
         
-        if var_method == "Historical VaR":
-            st.write("**Historical Value at Risk**")
-            st.write("Uses actual historical returns to estimate potential losses.")
+        # === MÉTODO HISTÓRICO ===
+        if var_method == "VaR Histórico":
+            st.write("**Valor en Riesgo Histórico**")
+            st.write("Utiliza los retornos reales del pasado para estimar posibles pérdidas futuras.")
             
-            # Generate sample historical returns
-            if st.button("Generate Historical Returns Data"):
+            if st.button("Generar Datos Históricos de Retornos"):
                 np.random.seed(42)
-                n_days = 252  # One year of daily data
+                n_days = 252  # Un año de datos diarios
                 
-                # Generate correlated returns for a portfolio
-                daily_returns = np.random.normal(0.0008, 0.02, n_days)  # ~20% annual volatility
+                daily_returns = np.random.normal(0.0008, 0.02, n_days)
                 
-                # Add some extreme events
                 extreme_events = np.random.choice(n_days, size=10, replace=False)
                 daily_returns[extreme_events] = np.random.normal(-0.03, 0.01, 10)
                 
                 df_returns = pd.DataFrame({
-                    'Date': pd.date_range(start='2023-01-01', periods=n_days, freq='B'),
-                    'Daily_Return': daily_returns,
-                    'Cumulative_Return': np.cumsum(daily_returns)
+                    'Fecha': pd.date_range(start='2023-01-01', periods=n_days, freq='B'),
+                    'Retorno Diario': daily_returns,
+                    'Retorno Acumulado': np.cumsum(daily_returns)
                 })
                 
-                # Plot returns
-                fig = px.line(df_returns, x='Date', y='Cumulative_Return', 
-                             title='Cumulative Portfolio Returns')
+                fig = px.line(df_returns, x='Fecha', y='Retorno Acumulado', 
+                             title='Retornos Acumulados del Portafolio')
                 st.plotly_chart(fig, use_container_width=True)
                 
-                # VaR Calculation
                 col1, col2 = st.columns(2)
                 with col1:
-                    confidence_level = st.selectbox("Confidence Level", [90, 95, 99], index=1)
-                    portfolio_value = st.number_input("Portfolio Value ($)", value=1000000, min_value=1000)
+                    confidence_level = st.selectbox("Nivel de Confianza (%)", [90, 95, 99], index=1)
+                    portfolio_value = st.number_input("Valor del Portafolio ($)", value=1000000, min_value=1000)
                 with col2:
-                    time_horizon = st.selectbox("Time Horizon (days)", [1, 5, 10], index=0)
+                    time_horizon = st.selectbox("Horizonte de Tiempo (días)", [1, 5, 10], index=0)
                 
                 alpha = (100 - confidence_level) / 100
-                
-                # Scale returns for time horizon
                 scaled_returns = daily_returns * np.sqrt(time_horizon)
                 
-                # Calculate Historical VaR
                 var_historical = np.percentile(scaled_returns, alpha * 100) * portfolio_value
                 
-                # Calculate Expected Shortfall (Conditional VaR)
                 tail_losses = scaled_returns[scaled_returns <= np.percentile(scaled_returns, alpha * 100)]
                 expected_shortfall = np.mean(tail_losses) * portfolio_value
                 
-                # Display results
-                st.subheader("VaR Results")
+                st.subheader("Resultados del VaR Histórico")
                 
                 col1, col2, col3 = st.columns(3)
                 with col1:
-                    st.metric("Historical VaR", f"${abs(var_historical):,.0f}")
+                    st.metric("VaR Histórico", f"${abs(var_historical):,.0f}")
                 with col2:
-                    st.metric("Expected Shortfall", f"${abs(expected_shortfall):,.0f}")
+                    st.metric("Pérdida Esperada (ES)", f"${abs(expected_shortfall):,.0f}")
                 with col3:
-                    st.metric("VaR as % of Portfolio", f"{abs(var_historical)/portfolio_value*100:.2f}%")
+                    st.metric("VaR como % del Portafolio", f"{abs(var_historical)/portfolio_value*100:.2f}%")
                 
-                # VaR visualization
                 fig = go.Figure()
                 
-                # Histogram of returns
                 fig.add_trace(go.Histogram(x=scaled_returns*100, nbinsx=50, 
-                                         name='Return Distribution', opacity=0.7))
+                                         name='Distribución de Retornos', opacity=0.7))
                 
-                # VaR line
                 fig.add_vline(x=np.percentile(scaled_returns, alpha * 100)*100, 
                              line_dash="dash", line_color="red",
                              annotation_text=f"{confidence_level}% VaR")
                 
-                # Expected Shortfall region
                 tail_threshold = np.percentile(scaled_returns, alpha * 100)
                 tail_returns = scaled_returns[scaled_returns <= tail_threshold]
                 
                 fig.add_trace(go.Histogram(x=tail_returns*100, nbinsx=20, 
-                                         name='Tail Losses', opacity=0.8, 
+                                         name='Pérdidas Extremas', opacity=0.8, 
                                          marker_color='red'))
                 
                 fig.update_layout(
-                    title=f"Return Distribution and {confidence_level}% VaR",
-                    xaxis_title="Daily Return (%)",
-                    yaxis_title="Frequency",
+                    title=f"Distribución de Retornos y {confidence_level}% VaR",
+                    xaxis_title="Retorno Diario (%)",
+                    yaxis_title="Frecuencia",
                     bargap=0.1
                 )
                 
                 st.plotly_chart(fig, use_container_width=True)
         
-        elif var_method == "Parametric VaR":
-            st.write("**Parametric Value at Risk**")
-            st.write("Assumes returns follow a normal distribution.")
+        # === MÉTODO PARAMÉTRICO ===
+        elif var_method == "VaR Paramétrico":
+            st.write("**Valor en Riesgo Paramétrico**")
+            st.write("Asume que los retornos siguen una distribución normal.")
             
             col1, col2 = st.columns(2)
             with col1:
-                portfolio_value = st.number_input("Portfolio Value ($)", value=1000000, min_value=1000, key="param_pv")
-                expected_return = st.number_input("Expected Daily Return (%)", value=0.05, min_value=-5.0, max_value=5.0) / 100
+                portfolio_value = st.number_input("Valor del Portafolio ($)", value=1000000, min_value=1000, key="param_pv")
+                expected_return = st.number_input("Retorno Diario Esperado (%)", value=0.05, min_value=-5.0, max_value=5.0) / 100
             with col2:
-                volatility = st.number_input("Daily Volatility (%)", value=1.5, min_value=0.1, max_value=10.0) / 100
-                confidence_level = st.selectbox("Confidence Level (%)", [90, 95, 99], index=1, key="param_conf")
+                volatility = st.number_input("Volatilidad Diaria (%)", value=1.5, min_value=0.1, max_value=10.0) / 100
+                confidence_level = st.selectbox("Nivel de Confianza (%)", [90, 95, 99], index=1, key="param_conf")
             
-            if st.button("Calculate Parametric VaR"):
+            if st.button("Calcular VaR Paramétrico"):
                 alpha = (100 - confidence_level) / 100
                 z_score = norm.ppf(alpha)
                 
-                # Parametric VaR
                 var_parametric = -(expected_return + z_score * volatility) * portfolio_value
-                
-                # For comparison, also calculate assuming zero mean
                 var_zero_mean = -z_score * volatility * portfolio_value
                 
                 col1, col2 = st.columns(2)
                 with col1:
-                    st.metric("Parametric VaR", f"${var_parametric:,.0f}")
-                    st.metric("Z-Score", f"{z_score:.3f}")
+                    st.metric("VaR Paramétrico", f"${var_parametric:,.0f}")
+                    st.metric("Valor Z", f"{z_score:.3f}")
                 with col2:
-                    st.metric("VaR (Zero Mean)", f"${var_zero_mean:,.0f}")
-                    st.metric("VaR as % of Portfolio", f"{var_parametric/portfolio_value*100:.2f}%")
+                    st.metric("VaR (Media Cero)", f"${var_zero_mean:,.0f}")
+                    st.metric("VaR como % del Portafolio", f"{var_parametric/portfolio_value*100:.2f}%")
                 
-                # Distribution visualization
                 x_range = np.linspace(-4*volatility, 4*volatility, 1000)
                 pdf = norm.pdf(x_range, expected_return, volatility)
                 
                 fig = go.Figure()
-                
-                # Normal distribution
                 fig.add_trace(go.Scatter(x=x_range*100, y=pdf, mode='lines', 
-                                       name='Return Distribution'))
+                                       name='Distribución de Retornos'))
                 
-                # VaR threshold
                 var_threshold = expected_return + z_score * volatility
                 fig.add_vline(x=var_threshold*100, line_dash="dash", line_color="red",
                              annotation_text=f"{confidence_level}% VaR")
                 
-                # Shade tail area
                 tail_x = x_range[x_range <= var_threshold]
                 tail_y = norm.pdf(tail_x, expected_return, volatility)
                 
                 fig.add_trace(go.Scatter(x=tail_x*100, y=tail_y, fill='tonexty', 
                                        fillcolor='rgba(255,0,0,0.3)', mode='none',
-                                       name=f'Tail Risk ({alpha*100:.0f}%)'))
+                                       name=f'Riesgo de Cola ({alpha*100:.0f}%)'))
                 
                 fig.update_layout(
-                    title="Normal Distribution and Parametric VaR",
-                    xaxis_title="Daily Return (%)",
-                    yaxis_title="Probability Density"
+                    title="Distribución Normal y VaR Paramétrico",
+                    xaxis_title="Retorno Diario (%)",
+                    yaxis_title="Densidad de Probabilidad"
                 )
                 
                 st.plotly_chart(fig, use_container_width=True)
         
-        elif var_method == "Monte Carlo VaR":
-            st.write("**Monte Carlo Value at Risk**")
-            st.write("Uses random simulation to generate potential future scenarios.")
+        # === MÉTODO MONTE CARLO ===
+        elif var_method == "VaR Monte Carlo":
+            st.write("**Valor en Riesgo por Simulación Monte Carlo**")
+            st.write("Utiliza simulaciones aleatorias para generar escenarios posibles de pérdidas futuras.")
             
             col1, col2 = st.columns(2)
             with col1:
-                portfolio_value = st.number_input("Portfolio Value ($)", value=1000000, min_value=1000, key="mc_pv")
-                expected_return = st.number_input("Expected Daily Return (%)", value=0.05, min_value=-5.0, max_value=5.0, key="mc_ret") / 100
-                volatility = st.number_input("Daily Volatility (%)", value=1.5, min_value=0.1, max_value=10.0, key="mc_vol") / 100
+                portfolio_value = st.number_input("Valor del Portafolio ($)", value=1000000, min_value=1000, key="mc_pv")
+                expected_return = st.number_input("Retorno Diario Esperado (%)", value=0.05, min_value=-5.0, max_value=5.0, key="mc_ret") / 100
+                volatility = st.number_input("Volatilidad Diaria (%)", value=1.5, min_value=0.1, max_value=10.0, key="mc_vol") / 100
             with col2:
-                n_simulations = st.number_input("Number of Simulations", value=10000, min_value=1000, max_value=100000)
-                confidence_level = st.selectbox("Confidence Level (%)", [90, 95, 99], index=1, key="mc_conf")
-                time_horizon = st.number_input("Time Horizon (days)", value=1, min_value=1, max_value=30)
+                n_simulations = st.number_input("Número de Simulaciones", value=10000, min_value=1000, max_value=100000)
+                confidence_level = st.selectbox("Nivel de Confianza (%)", [90, 95, 99], index=1, key="mc_conf")
+                time_horizon = st.number_input("Horizonte de Tiempo (días)", value=1, min_value=1, max_value=30)
             
-            if st.button("Run Monte Carlo Simulation"):
+            if st.button("Ejecutar Simulación Monte Carlo"):
                 np.random.seed(42)
                 
-                # Generate random returns
-                dt = 1  # Daily time step
                 random_returns = np.random.normal(
                     expected_return * time_horizon,
                     volatility * np.sqrt(time_horizon),
                     n_simulations
                 )
                 
-                # Calculate portfolio values
                 portfolio_values = portfolio_value * (1 + random_returns)
                 portfolio_changes = portfolio_values - portfolio_value
                 
-                # Calculate VaR
                 alpha = (100 - confidence_level) / 100
                 var_monte_carlo = -np.percentile(portfolio_changes, alpha * 100)
                 
-                # Expected Shortfall
                 tail_losses = portfolio_changes[portfolio_changes <= -var_monte_carlo]
                 expected_shortfall = -np.mean(tail_losses)
                 
-                # Display results
                 col1, col2, col3 = st.columns(3)
                 with col1:
-                    st.metric("Monte Carlo VaR", f"${var_monte_carlo:,.0f}")
+                    st.metric("VaR Monte Carlo", f"${var_monte_carlo:,.0f}")
                 with col2:
-                    st.metric("Expected Shortfall", f"${expected_shortfall:,.0f}")
+                    st.metric("Pérdida Esperada (ES)", f"${expected_shortfall:,.0f}")
                 with col3:
-                    st.metric("Worst Case Loss", f"${-min(portfolio_changes):,.0f}")
+                    st.metric("Pérdida Máxima Simulada", f"${-min(portfolio_changes):,.0f}")
                 
-                # Simulation results visualization
                 fig = go.Figure()
-                
-                # Histogram of portfolio changes
                 fig.add_trace(go.Histogram(x=portfolio_changes/1000, nbinsx=50, 
-                                         name='Simulated P&L ($000)', opacity=0.7))
+                                         name='Resultados Simulados ($000)', opacity=0.7))
                 
-                # VaR line
                 fig.add_vline(x=-var_monte_carlo/1000, line_dash="dash", line_color="red",
                              annotation_text=f"{confidence_level}% VaR")
-                
-                # Expected Shortfall line
                 fig.add_vline(x=-expected_shortfall/1000, line_dash="dot", line_color="orange",
-                             annotation_text="Expected Shortfall")
+                             annotation_text="Pérdida Esperada")
                 
                 fig.update_layout(
-                    title=f"Monte Carlo Simulation Results ({n_simulations:,} simulations)",
-                    xaxis_title="Portfolio Change ($000)",
-                    yaxis_title="Frequency"
+                    title=f"Resultados de la Simulación Monte Carlo ({n_simulations:,} simulaciones)",
+                    xaxis_title="Cambio del Portafolio ($000)",
+                    yaxis_title="Frecuencia"
                 )
                 
                 st.plotly_chart(fig, use_container_width=True)
-    
+
+    # === TAB 3: PRUEBAS DE ESTRÉS ===
     with tab3:
-        st.subheader("Stress Testing")
+        st.subheader("Pruebas de Estrés")
         
         st.write("""
-        Stress testing evaluates how portfolios perform under extreme but plausible adverse scenarios. 
-        It complements VaR by examining tail risk and model limitations.
+        Las pruebas de estrés evalúan cómo se comporta un portafolio bajo escenarios extremos pero plausibles.
+        Complementan el VaR al analizar el riesgo en la cola y las limitaciones de los modelos.
         """)
         
-        st.subheader("Scenario Analysis")
+        st.subheader("Análisis de Escenarios")
         
-        # Define stress scenarios
-        scenarios = {
-            "Base Case": {"Stock": 0.0, "Bond": 0.0, "Currency": 0.0},
-            "Market Crash": {"Stock": -30.0, "Bond": 5.0, "Currency": -10.0},
-            "Interest Rate Shock": {"Stock": -10.0, "Bond": -15.0, "Currency": 0.0},
-            "Currency Crisis": {"Stock": -15.0, "Bond": -5.0, "Currency": -25.0},
-            "Stagflation": {"Stock": -20.0, "Bond": -10.0, "Currency": -15.0},
-            "Recovery": {"Stock": 25.0, "Bond": -3.0, "Currency": 5.0}
+        escenarios = {
+            "Caso Base": {"Acciones": 0.0, "Bonos": 0.0, "Divisas": 0.0},
+            "Colapso del Mercado": {"Acciones": -30.0, "Bonos": 5.0, "Divisas": -10.0},
+            "Shock de Tasas de Interés": {"Acciones": -10.0, "Bonos": -15.0, "Divisas": 0.0},
+            "Crisis Cambiaria": {"Acciones": -15.0, "Bonos": -5.0, "Divisas": -25.0},
+            "Estanflación": {"Acciones": -20.0, "Bonos": -10.0, "Divisas": -15.0},
+            "Recuperación": {"Acciones": 25.0, "Bonos": -3.0, "Divisas": 5.0}
         }
         
-        # Portfolio allocation input
-        st.subheader("Portfolio Allocation")
+        st.subheader("Asignación del Portafolio")
         
         col1, col2, col3 = st.columns(3)
         with col1:
-            stock_allocation = st.slider("Stock Allocation (%)", 0, 100, 60)
-            portfolio_value = st.number_input("Portfolio Value ($)", value=1000000, min_value=1000, key="stress_pv")
+            stock_allocation = st.slider("Asignación en Acciones (%)", 0, 100, 60)
+            portfolio_value = st.number_input("Valor del Portafolio ($)", value=1000000, min_value=1000, key="stress_pv")
         with col2:
-            bond_allocation = st.slider("Bond Allocation (%)", 0, 100, 30)
+            bond_allocation = st.slider("Asignación en Bonos (%)", 0, 100, 30)
         with col3:
             currency_allocation = 100 - stock_allocation - bond_allocation
-            st.metric("Currency Allocation (%)", currency_allocation)
+            st.metric("Asignación en Divisas (%)", currency_allocation)
         
         if stock_allocation + bond_allocation <= 100:
-            if st.button("Run Stress Test"):
-                # Calculate portfolio impact for each scenario
-                stress_results = []
+            if st.button("Ejecutar Prueba de Estrés"):
+                resultados = []
                 
-                for scenario_name, shocks in scenarios.items():
-                    portfolio_impact = (
-                        (stock_allocation/100) * (shocks["Stock"]/100) * portfolio_value +
-                        (bond_allocation/100) * (shocks["Bond"]/100) * portfolio_value +
-                        (currency_allocation/100) * (shocks["Currency"]/100) * portfolio_value
+                for nombre, shocks in escenarios.items():
+                    impacto = (
+                        (stock_allocation/100) * (shocks["Acciones"]/100) * portfolio_value +
+                        (bond_allocation/100) * (shocks["Bonos"]/100) * portfolio_value +
+                        (currency_allocation/100) * (shocks["Divisas"]/100) * portfolio_value
                     )
                     
-                    new_portfolio_value = portfolio_value + portfolio_impact
+                    nuevo_valor = portfolio_value + impacto
                     
-                    stress_results.append({
-                        'Scenario': scenario_name,
-                        'Portfolio Impact ($)': portfolio_impact,
-                        'Portfolio Impact (%)': (portfolio_impact / portfolio_value) * 100,
-                        'New Portfolio Value ($)': new_portfolio_value
+                    resultados.append({
+                        'Escenario': nombre,
+                        'Impacto ($)': impacto,
+                        'Impacto (%)': (impacto / portfolio_value) * 100,
+                        'Nuevo Valor ($)': nuevo_valor
                     })
                 
-                # Display results
-                df_stress = pd.DataFrame(stress_results)
+                df_stress = pd.DataFrame(resultados)
                 st.dataframe(df_stress, use_container_width=True)
                 
-                # Visualization
-                fig = px.bar(df_stress, x='Scenario', y='Portfolio Impact (%)', 
-                           title='Stress Test Results',
-                           color='Portfolio Impact (%)',
+                fig = px.bar(df_stress, x='Escenario', y='Impacto (%)', 
+                           title='Resultados de la Prueba de Estrés',
+                           color='Impacto (%)',
                            color_continuous_scale='RdYlGn_r')
                 
                 fig.add_hline(y=0, line_dash="dash", line_color="black")
                 fig.update_layout(xaxis_tickangle=-45)
                 st.plotly_chart(fig, use_container_width=True)
                 
-                # Risk metrics
-                st.subheader("Risk Assessment")
+                st.subheader("Evaluación del Riesgo")
                 
-                worst_case = min(stress_results, key=lambda x: x['Portfolio Impact ($)'])
-                best_case = max(stress_results, key=lambda x: x['Portfolio Impact ($)'])
+                peor = min(resultados, key=lambda x: x['Impacto ($)'])
+                mejor = max(resultados, key=lambda x: x['Impacto ($)'])
                 
                 col1, col2, col3 = st.columns(3)
                 with col1:
-                    st.metric("Worst Case Loss", 
-                             f"${abs(worst_case['Portfolio Impact ($)']):,.0f}",
-                             f"{worst_case['Portfolio Impact (%)']:.1f}%")
+                    st.metric("Pérdida Máxima", 
+                             f"${abs(peor['Impacto ($)']):,.0f}",
+                             f"{peor['Impacto (%)']:.1f}%")
                 with col2:
-                    st.metric("Best Case Gain", 
-                             f"${best_case['Portfolio Impact ($)']:,.0f}",
-                             f"{best_case['Portfolio Impact (%)']:.1f}%")
+                    st.metric("Ganancia Máxima", 
+                             f"${mejor['Impacto ($)']:,.0f}",
+                             f"{mejor['Impacto (%)']:.1f}%")
                 with col3:
-                    range_impact = best_case['Portfolio Impact ($)'] - worst_case['Portfolio Impact ($)']
-                    st.metric("Impact Range", f"${range_impact:,.0f}")
+                    rango = mejor['Impacto ($)'] - peor['Impacto ($)']
+                    st.metric("Rango de Impacto", f"${rango:,.0f}")
         else:
-            st.error("Portfolio allocations must sum to 100% or less.")
+            st.error("⚠️ Las asignaciones deben sumar 100% o menos.")
         
-        # Historical Stress Testing
-        st.subheader("Historical Stress Test")
+        # === PRUEBA DE ESTRÉS HISTÓRICA ===
+        st.subheader("Prueba de Estrés Histórica")
         
-        st.write("Test portfolio performance during historical crisis periods:")
+        st.write("Evalúa el rendimiento del portafolio durante crisis históricas conocidas:")
         
-        historical_crises = {
-            "Black Monday (1987)": {"Date": "Oct 1987", "Stock": -22.6, "Bond": 2.1},
-            "Dot-com Crash (2000)": {"Date": "Mar 2000", "Stock": -39.3, "Bond": 12.6},
-            "9/11 Attacks (2001)": {"Date": "Sep 2001", "Stock": -11.6, "Bond": 4.5},
-            "Financial Crisis (2008)": {"Date": "Oct 2008", "Stock": -36.8, "Bond": 20.1},
-            "Flash Crash (2010)": {"Date": "May 2010", "Stock": -6.1, "Bond": 1.2},
-            "COVID-19 Crash (2020)": {"Date": "Mar 2020", "Stock": -33.8, "Bond": 8.0}
+        crisis_históricas = {
+            "Lunes Negro (1987)": {"Fecha": "Oct 1987", "Acciones": -22.6, "Bonos": 2.1},
+            "Burbuja Puntocom (2000)": {"Fecha": "Mar 2000", "Acciones": -39.3, "Bonos": 12.6},
+            "Atentados 9/11 (2001)": {"Fecha": "Sep 2001", "Acciones": -11.6, "Bonos": 4.5},
+            "Crisis Financiera (2008)": {"Fecha": "Oct 2008", "Acciones": -36.8, "Bonos": 20.1},
+            "Flash Crash (2010)": {"Fecha": "May 2010", "Acciones": -6.1, "Bonos": 1.2},
+            "COVID-19 (2020)": {"Fecha": "Mar 2020", "Acciones": -33.8, "Bonos": 8.0}
         }
         
-        selected_crisis = st.selectbox("Select Historical Crisis:", list(historical_crises.keys()))
+        seleccion = st.selectbox("Selecciona una crisis histórica:", list(crisis_históricas.keys()))
         
-        if st.button("Analyze Historical Impact"):
-            crisis_data = historical_crises[selected_crisis]
+        if st.button("Analizar Impacto Histórico"):
+            crisis = crisis_históricas[seleccion]
             
-            # Calculate impact (simplified - only stocks and bonds)
-            total_allocation = stock_allocation + bond_allocation
-            if total_allocation > 0:
-                stock_weight = stock_allocation / total_allocation
-                bond_weight = bond_allocation / total_allocation
+            total = stock_allocation + bond_allocation
+            if total > 0:
+                peso_acciones = stock_allocation / total
+                peso_bonos = bond_allocation / total
                 
-                historical_impact = (
-                    stock_weight * (crisis_data["Stock"]/100) * portfolio_value +
-                    bond_weight * (crisis_data["Bond"]/100) * portfolio_value
+                impacto_histórico = (
+                    peso_acciones * (crisis["Acciones"]/100) * portfolio_value +
+                    peso_bonos * (crisis["Bonos"]/100) * portfolio_value
                 )
                 
                 col1, col2 = st.columns(2)
                 with col1:
-                    st.metric("Historical Impact", 
-                             f"${historical_impact:,.0f}",
-                             f"{(historical_impact/portfolio_value)*100:.2f}%")
+                    st.metric("Impacto Histórico", 
+                             f"${impacto_histórico:,.0f}",
+                             f"{(impacto_histórico/portfolio_value)*100:.2f}%")
                 with col2:
-                    st.metric("Crisis Period", crisis_data["Date"])
+                    st.metric("Periodo de Crisis", crisis["Fecha"])
                 
-                if historical_impact < 0:
-                    st.warning(f"⚠️ Your portfolio would have lost ${abs(historical_impact):,.0f} during {selected_crisis}")
+                if impacto_histórico < 0:
+                    st.warning(f"⚠️ Tu portafolio habría perdido ${abs(impacto_histórico):,.0f} durante {seleccion}")
                 else:
-                    st.success(f"✅ Your portfolio would have gained ${historical_impact:,.0f} during {selected_crisis}")
+                    st.success(f"✅ Tu portafolio habría ganado ${impacto_histórico:,.0f} durante {seleccion}")
     
+    # === TAB 4: MÉTRICAS DE RIESGO ===
     with tab4:
-        st.subheader("Advanced Risk Metrics")
+        st.subheader("Métricas de Riesgo Avanzadas")
         
         st.write("""
-        Beyond basic volatility and VaR, sophisticated risk metrics provide deeper insights 
-        into portfolio behavior and risk characteristics.
+        Más allá de la volatilidad y el VaR, existen métricas avanzadas que ofrecen una visión más profunda
+        del comportamiento del portafolio y su perfil de riesgo.
         """)
         
-        # Generate sample return data
-        if st.button("Generate Sample Portfolio Data"):
+        if st.button("Generar Datos de Ejemplo del Portafolio"):
             np.random.seed(42)
-            
-            # Create sample daily returns for different asset classes
             n_days = 252
             dates = pd.date_range(start='2023-01-01', periods=n_days, freq='B')
             
-            # Simulate correlated returns
             correlation_matrix = np.array([
                 [1.0, 0.7, -0.2, 0.4],
                 [0.7, 1.0, -0.1, 0.5],
@@ -557,77 +517,64 @@ def run_class():
                 [0.4, 0.5, 0.1, 1.0]
             ])
             
-            means = np.array([0.0008, 0.0006, 0.0002, 0.0004])  # Daily returns
-            volatilities = np.array([0.016, 0.020, 0.008, 0.025])  # Daily volatilities
+            means = np.array([0.0008, 0.0006, 0.0002, 0.0004])
+            volatilities = np.array([0.016, 0.020, 0.008, 0.025])
             
-            # Generate correlated random returns
             random_normal = np.random.multivariate_normal(means, 
                                                          np.outer(volatilities, volatilities) * correlation_matrix, 
                                                          n_days)
             
             df_returns = pd.DataFrame(random_normal, 
-                                    columns=['US_Stocks', 'Intl_Stocks', 'Bonds', 'Commodities'],
+                                    columns=['Acciones_USA', 'Acciones_Intl', 'Bonos', 'MateriasPrimas'],
                                     index=dates)
             
-            # Portfolio weights
-            weights = np.array([0.4, 0.3, 0.2, 0.1])  # 40% US stocks, 30% Intl, 20% bonds, 10% commodities
-            
-            # Calculate portfolio returns
+            weights = np.array([0.4, 0.3, 0.2, 0.1])
             portfolio_returns = (df_returns * weights).sum(axis=1)
             
-            # Calculate various risk metrics
-            st.subheader("Risk Metrics Summary")
+            st.subheader("Resumen de Métricas de Riesgo")
             
-            # Basic metrics
             annual_return = portfolio_returns.mean() * 252
             annual_volatility = portfolio_returns.std() * np.sqrt(252)
-            sharpe_ratio = (annual_return - 0.03) / annual_volatility  # Assuming 3% risk-free rate
+            sharpe_ratio = (annual_return - 0.03) / annual_volatility
             
-            # Downside metrics
             downside_returns = portfolio_returns[portfolio_returns < 0]
             downside_deviation = downside_returns.std() * np.sqrt(252)
             sortino_ratio = (annual_return - 0.03) / downside_deviation if len(downside_returns) > 0 else np.nan
             
-            # Maximum Drawdown
             cumulative_returns = (1 + portfolio_returns).cumprod()
             rolling_max = cumulative_returns.expanding().max()
             drawdowns = (cumulative_returns - rolling_max) / rolling_max
             max_drawdown = drawdowns.min()
             
-            # VaR and Expected Shortfall
             var_95 = np.percentile(portfolio_returns, 5)
             expected_shortfall = portfolio_returns[portfolio_returns <= var_95].mean()
             
-            # Skewness and Kurtosis
             from scipy.stats import skew, kurtosis
             portfolio_skewness = skew(portfolio_returns)
             portfolio_kurtosis = kurtosis(portfolio_returns)
             
-            # Display metrics
             col1, col2, col3, col4 = st.columns(4)
-            
             with col1:
-                st.metric("Annual Return", f"{annual_return*100:.2f}%")
-                st.metric("Volatility", f"{annual_volatility*100:.2f}%")
+                st.metric("Retorno Anual", f"{annual_return*100:.2f}%")
+                st.metric("Volatilidad", f"{annual_volatility*100:.2f}%")
             with col2:
-                st.metric("Sharpe Ratio", f"{sharpe_ratio:.3f}")
-                st.metric("Sortino Ratio", f"{sortino_ratio:.3f}")
+                st.metric("Ratio de Sharpe", f"{sharpe_ratio:.3f}")
+                st.metric("Ratio de Sortino", f"{sortino_ratio:.3f}")
             with col3:
-                st.metric("Max Drawdown", f"{max_drawdown*100:.2f}%")
-                st.metric("95% VaR (Daily)", f"{var_95*100:.2f}%")
+                st.metric("Máxima Pérdida (Drawdown)", f"{max_drawdown*100:.2f}%")
+                st.metric("VaR (95%) Diario", f"{var_95*100:.2f}%")
             with col4:
-                st.metric("Skewness", f"{portfolio_skewness:.3f}")
-                st.metric("Kurtosis", f"{portfolio_kurtosis:.3f}")
+                st.metric("Asimetría (Skewness)", f"{portfolio_skewness:.3f}")
+                st.metric("Curtosis", f"{portfolio_kurtosis:.3f}")
             
-            # Detailed risk metrics table
-            st.subheader("Detailed Risk Analysis")
+            st.subheader("Análisis Detallado de Riesgo")
             
             risk_metrics = {
-                'Metric': [
-                    'Value at Risk (95%)', 'Expected Shortfall (95%)', 'Downside Deviation',
-                    'Maximum Drawdown', 'Calmar Ratio', 'Skewness', 'Excess Kurtosis'
+                'Métrica': [
+                    'Valor en Riesgo (95%)', 'Pérdida Esperada (95%)', 'Desviación a la Baja',
+                    'Máximo Drawdown', 'Ratio de Calmar', 'Asimetría', 'Exceso de Curtosis'
                 ],
-                'Value': [
+                'Valor': [
                     f"{var_95*100:.2f}%",
                     f"{expected_shortfall*100:.2f}%",
                     f"{downside_deviation*100:.2f}%",
@@ -636,141 +583,124 @@ def run_class():
                     f"{portfolio_skewness:.3f}",
                     f"{portfolio_kurtosis:.3f}"
                 ],
-                'Interpretation': [
-                    'Expected daily loss exceeded 5% of the time',
-                    'Average loss when VaR is exceeded',
-                    'Volatility of negative returns only',
-                    'Worst peak-to-trough decline',
-                    'Return per unit of max drawdown',
-                    'Asymmetry of return distribution',
-                    'Tail thickness vs normal distribution'
+                'Interpretación': [
+                    'Pérdida diaria esperada superada el 5% del tiempo',
+                    'Promedio de pérdida cuando se supera el VaR',
+                    'Volatilidad de los retornos negativos',
+                    'Mayor caída desde un máximo histórico',
+                    'Retorno por unidad de pérdida máxima',
+                    'Grado de asimetría en la distribución',
+                    'Comparación de colas con la distribución normal'
                 ]
             }
             
             df_risk_metrics = pd.DataFrame(risk_metrics)
             st.dataframe(df_risk_metrics, use_container_width=True)
             
-            # Visualizations
             col1, col2 = st.columns(2)
-            
             with col1:
-                # Rolling volatility
                 rolling_vol = portfolio_returns.rolling(window=30).std() * np.sqrt(252)
                 fig1 = px.line(x=rolling_vol.index, y=rolling_vol.values, 
-                              title='30-Day Rolling Volatility')
-                fig1.update_layout(xaxis_title="Date", yaxis_title="Annualized Volatility")
+                              title='Volatilidad Móvil de 30 Días')
+                fig1.update_layout(xaxis_title="Fecha", yaxis_title="Volatilidad Anualizada")
                 st.plotly_chart(fig1, use_container_width=True)
             
             with col2:
-                # Drawdown chart
                 fig2 = px.line(x=drawdowns.index, y=drawdowns.values * 100, 
-                              title='Portfolio Drawdowns')
-                fig2.update_layout(xaxis_title="Date", yaxis_title="Drawdown (%)")
+                              title='Evolución del Drawdown del Portafolio')
+                fig2.update_layout(xaxis_title="Fecha", yaxis_title="Drawdown (%)")
                 st.plotly_chart(fig2, use_container_width=True)
         
-        # Risk assessment quiz
-        st.subheader("Risk Management Assessment")
+        # === EVALUACIÓN FINAL ===
+        st.subheader("Evaluación de Gestión de Riesgos")
         
         q1 = st.radio(
-            "Which measure captures tail risk better than VaR?",
-            ["Standard deviation", "Expected shortfall", "Beta", "Correlation"],
+            "¿Qué medida captura mejor el riesgo en la cola que el VaR?",
+            ["Desviación estándar", "Pérdida esperada", "Beta", "Correlación"],
             key="risk_q1"
         )
         
         q2 = st.radio(
-            "Maximum drawdown measures:",
-            ["Average loss", "Peak-to-trough decline", "Daily volatility", "Skewness"],
+            "El máximo drawdown mide:",
+            ["Pérdida promedio", "Caída desde el máximo al mínimo", "Volatilidad diaria", "Asimetría"],
             key="risk_q2"
         )
         
         q3 = st.radio(
-            "A portfolio with negative skewness has:",
-            ["More upside potential", "More downside risk", "Higher returns", "Lower volatility"],
+            "Un portafolio con asimetría negativa tiene:",
+            ["Más potencial al alza", "Mayor riesgo a la baja", "Mayores retornos", "Menor volatilidad"],
             key="risk_q3"
         )
         
-        if st.button("Submit Assessment"):
+        if st.button("Enviar Evaluación"):
             score = 0
             
-            if q1 == "Expected shortfall":
-                st.success("Q1: Correct! ✅")
+            if q1 == "Pérdida esperada":
+                st.success("Pregunta 1: ✅ Correcto. La pérdida esperada mide la gravedad de las pérdidas extremas.")
                 score += 1
             else:
-                st.error("Q1: Incorrect. Expected shortfall captures the severity of tail losses beyond VaR.")
+                st.error("Pregunta 1: ❌ Incorrecto. La pérdida esperada captura mejor las pérdidas más allá del VaR.")
             
-            if q2 == "Peak-to-trough decline":
-                st.success("Q2: Correct! ✅")
+            if q2 == "Caída desde el máximo al mínimo":
+                st.success("Pregunta 2: ✅ Correcto. El drawdown mide la peor caída entre un pico y un valle.")
                 score += 1
             else:
-                st.error("Q2: Incorrect. Maximum drawdown measures the worst peak-to-trough decline.")
+                st.error("Pregunta 2: ❌ Incorrecto. El máximo drawdown representa la caída más profunda del valor del portafolio.")
             
-            if q3 == "More downside risk":
-                st.success("Q3: Correct! ✅")
+            if q3 == "Mayor riesgo a la baja":
+                st.success("Pregunta 3: ✅ Correcto. La asimetría negativa implica más probabilidad de grandes pérdidas.")
                 score += 1
             else:
-                st.error("Q3: Incorrect. Negative skewness indicates more frequent large losses.")
+                st.error("Pregunta 3: ❌ Incorrecto. Una asimetría negativa significa más pérdidas extremas que ganancias.")
             
-            st.write(f"Your score: {score}/3")
+            st.write(f"Puntaje obtenido: {score}/3")
             
             if score >= 2:
                 st.balloons()
-                progress_tracker.mark_class_completed("Class 8: Risk Management")
-                progress_tracker.set_class_score("Class 8: Risk Management", (score/3) * 100)
-                st.success("🎉 Excellent! You understand risk management!")
+                progress_tracker.mark_class_completed("Clase 8: Gestión de Riesgos")
+                progress_tracker.set_class_score("Clase 8: Gestión de Riesgos", (score/3) * 100)
+                st.success("🎉 ¡Excelente! Has comprendido los fundamentos de la gestión de riesgos.")
     
-    # Download materials
+    # === DESCARGA DE MATERIALES ===
     st.sidebar.markdown("---")
-    st.sidebar.subheader("📚 Risk Management Resources")
+    st.sidebar.subheader("📚 Recursos de Gestión de Riesgos")
     
     risk_code = """
-# Risk Management Tools
-
+# Risk Management Tools (versión original en inglés)
 import numpy as np
 from scipy.stats import norm
 
 def historical_var(returns, confidence_level=0.05):
-    '''Calculate historical Value at Risk'''
     return np.percentile(returns, confidence_level * 100)
 
 def parametric_var(expected_return, volatility, confidence_level=0.05):
-    '''Calculate parametric VaR assuming normal distribution'''
     z_score = norm.ppf(confidence_level)
     return expected_return + z_score * volatility
 
 def expected_shortfall(returns, confidence_level=0.05):
-    '''Calculate Expected Shortfall (Conditional VaR)'''
     var = historical_var(returns, confidence_level)
     return np.mean(returns[returns <= var])
 
 def maximum_drawdown(returns):
-    '''Calculate maximum drawdown from return series'''
     cumulative = (1 + returns).cumprod()
     rolling_max = cumulative.expanding().max()
     drawdowns = (cumulative - rolling_max) / rolling_max
     return drawdowns.min()
 
 def sharpe_ratio(returns, risk_free_rate=0.0):
-    '''Calculate Sharpe ratio'''
     excess_returns = returns - risk_free_rate
     return excess_returns.mean() / excess_returns.std()
 
 def sortino_ratio(returns, risk_free_rate=0.0):
-    '''Calculate Sortino ratio (downside deviation)'''
     excess_returns = returns - risk_free_rate
     downside_returns = excess_returns[excess_returns < 0]
     downside_std = downside_returns.std()
     return excess_returns.mean() / downside_std
-
-# Example usage
-sample_returns = np.random.normal(0.001, 0.02, 252)  # Daily returns
-var_95 = historical_var(sample_returns, 0.05)
-es_95 = expected_shortfall(sample_returns, 0.05)
-max_dd = maximum_drawdown(sample_returns)
 """
     
     st.sidebar.download_button(
-        label="💻 Download Risk Code",
+        label="💻 Descargar Código de Riesgo",
         data=risk_code,
-        file_name="risk_management.py",
+        file_name="gestion_riesgos.py",
         mime="text/python"
     )

@@ -27,14 +27,14 @@ CLASSES = {
 
 def main():
     st.set_page_config(
-        page_title="Viernes de Codigo",
+        page_title="Viernes de Codigo Uninorte - 2025 - Juan Camilo Pinedo",
         page_icon="📈",
         layout="wide",
         initial_sidebar_state="expanded"
     )
     
     # Main title
-    st.title("📈 Viernes de codigo")
+    st.title("📈 Viernes de Codigo Uninorte - 2025 - Juan Camilo Pinedo")
     st.markdown("---")
     
     # Sidebar navigation
