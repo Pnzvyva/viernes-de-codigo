@@ -2,169 +2,136 @@
 marp: true
 theme: sparta
 paginate: true
-class: lead
+title: Fundamentos de Inteligencia Artificial en Finanzas
+description: Clase magistral — Redes Neuronales y LSTM aplicadas a la predicción de volatilidad
+size: 16:9
+math: mathjax
 ---
 
-
-
-
+ 
 # Viernes de código
 ## 🧠 Inteligencia Artificial en Finanzas
-### _De Random Forest a la predicción de volatilidad en derivados_
+### _Fundamentos de redes neuronales_
 **Juan Camilo Pinedo Campo** · Universidad del Norte  
-_26 septiembre 2025_
+_24 Octubre 2025_
+
 
 ---
 
-# 📘 Agenda
+# Estructura de la clase
 
-1️⃣ ¿Qué es Random Forest?  
-2️⃣ Cómo aprende un modelo de IA supervisado  
-3️⃣ Conexión con la predicción de volatilidad  
-4️⃣ Integración con Black–Scholes  
-5️⃣ Resultados en BTC–USD (Colab)  
-6️⃣ Conclusiones y evolución hacia la IA moderna
+1. Inteligencia artificial en las finanzas modernas  
+2. Fundamentos de redes neuronales  
+3. Aplicaciones financieras: predicción de volatilidad  
+4. Construcción del modelo en Python  
+5. Evaluación e interpretación de resultados  
+6. Extensiones y cierre conceptual
 
 ---
 
-# 🌳 ¿Qué es Random Forest?
+# 1. Inteligencia Artificial en Finanzas
 
-> Un modelo de **Machine Learning supervisado** basado en **árboles de decisión**.
+- La IA ha transformado el análisis financiero:
+  - *Modelos de predicción de riesgo y volatilidad*  
+  - *Análisis algorítmico de precios y derivados*  
+  - *Optimización de portafolios con machine learning*  
+  - *Gestión automatizada (robo-advisors)*  
 
-- Conjunto (*ensemble*) de muchos árboles entrenados con muestras distintas.
-- Cada árbol aprende reglas del tipo:
-  - Si `rv_21 > 0.35` → volatilidad alta  
-  - Si `rv_21 <= 0.35` y `mom_21 < -0.05` → volatilidad media
-- El resultado final es el **promedio** de todos los árboles.
+**Idea central:**  
+La IA reemplaza reglas rígidas por sistemas que **aprenden patrones directamente de los datos**.
+
+---
+
+## De los modelos econométricos a la IA
+
+| Enfoque | Supuestos | Limitaciones |
+|----------|------------|---------------|
+| **Econométrico (ej. GARCH)** | Linealidad, varianza condicional fija | Rigidez estructural |
+| **Machine Learning** | Pocos supuestos, alta capacidad predictiva | Menor interpretabilidad |
+
+**Visión moderna:** combinar ambos mundos → IA para descubrir dinámicas ocultas en los mercados.
+
+---
+
+# 2. Fundamentos de Redes Neuronales
+
+Una red neuronal es un **sistema de funciones compuestas** que aprende una relación entre variables de entrada y salida.
 
 \[
-\hat{y} = \frac{1}{N}\sum_{i=1}^{N} f_i(X)
+y = f(Wx + b)
 \]
 
-**Ventaja:** aprende relaciones no lineales sin asumir fórmulas teóricas.
+Donde:
+- **W**: pesos o “importancias” aprendidas  
+- **b**: sesgo  
+- **f(·)**: función de activación no lineal  
 
 ---
 
-# ⚙️ Cómo aprende un Random Forest
+# Intuición
 
-1. **Bootstrap:** selecciona subconjuntos aleatorios del dataset.  
-2. **Feature Sampling:** usa solo una fracción de las variables.  
-3. **Entrena árboles de decisión independientes.**  
-4. **Agrega resultados (promedio).**  
+Una neurona artificial es un **filtro no lineal de información**:
 
-🧮 Criterio de aprendizaje: minimizar el **Error Cuadrático Medio (MSE)**  
+x1 ─┬─▶[ w1 ]──┐
+x2 ─┼─▶[ w2 ]──┼──▶ Σ + b → f(·) → y
+x3 ─┴─▶[ w3 ]──┘
 
-```python
-model = RandomForestRegressor(n_estimators=400, max_depth=8)
-model.fit(X_train, y_train)
-```
 
----
-
-# 🧠 ¿Por qué es IA?
-
-- Aprende de los **datos históricos** sin reglas explícitas.
-- Captura **patrones ocultos** y no lineales.  
-- Mejora la **predicción** de variables financieras.  
-- Se adapta dinámicamente a cambios de mercado.  
-
-👉 Es una forma de **inteligencia supervisada**: aprende la función que mejor mapea X → Y.
+Cada capa aprende un nivel distinto de abstracción:
+- Capa 1: relaciones directas (retornos → volatilidad)  
+- Capa 2: interacciones más complejas (momentum + shocks)  
 
 ---
 
-# 💹 Conexión con Finanzas
+# Funciones de activación
 
-| Elemento | Rol |
-|-----------|-----|
-| Variables de entrada (`rv_5`, `rv_21`, `mom_21`) | Estado del mercado |
-| Variable objetivo (`rv_fwd_21`) | Volatilidad futura |
-| Modelo (Random Forest) | IA que aprende relaciones históricas |
-| Resultado (`iv_hat`) | Volatilidad implícita pronosticada |
-| Black–Scholes | Modelo analítico que usa esa IV |
-
-➡️ IA proporciona **inputs inteligentes** a modelos financieros clásicos.
-
----
-
-# 🔗 Integración con Black–Scholes
-
-🔹 La IA pronostica la volatilidad `σ̂`  
-🔹 Black–Scholes calcula el precio de la opción `C(S, K, T, r, σ̂)`  
-🔹 Se obtienen los *Greeks* (Δ, Γ, vega, θ)  
-🔹 Se ejecuta un *delta–hedging* con la IV pronosticada.
-
-Resultado: un sistema **híbrido** IA + Finanzas Cuantitativas.
-
----
-
-# 📊 Caso práctico — BTC–USD
-
-Datos de `yfinance`: *Bitcoin (BTC–USD)*  
-Periodo: 2016–2025  
-Horizonte: 30 días (T = 30/252)
-
-**Modelo:** `RandomForestRegressor`  
-**Objetivo:** predecir volatilidad futura  
-**Aplicación:** pricing y cobertura con θ incluido.
-
----
-
-# 📈 Resultados principales
-
-- MAE y RMSE alrededor de 0.02–0.04 (buen ajuste)
-- Volatilidad pronosticada sigue bien los picos de mercado
-- IV pronosticada correlaciona fuertemente con el precio de la opción
-- PnL con θ incluido muestra cobertura más estable
-
-![width:800px](https://upload.wikimedia.org/wikipedia/commons/e/e8/Random_forest_diagram_complete.png)
-
----
-
-# 🧩 Random Forest como primera IA en finanzas
-
-- Primer algoritmo **no paramétrico, interpretable y masivo** usado en bancos.  
-- Adoptado entre 2005–2010 por **hedge funds cuantitativos**.  
-- Mejoró predicciones de riesgo, crédito y volatilidad.  
-- Aceptado por reguladores gracias a su **explicabilidad**.
-
-📚 **Referencia:** Breiman, L. (2001) — *Random Forests*, *Machine Learning*, 45(1), 5–32.
-
----
-
-# 🔮 Evolución posterior
-
-1. **Gradient Boosting** (XGBoost, LightGBM) → árboles secuenciales.  
-2. **Redes neuronales** → aprenden jerarquías más profundas.  
-3. **Reinforcement Learning** → decisiones de cobertura adaptativas.  
-4. **Explainable AI (XAI)** → interpretación de modelos.
-
----
-
-# 🧠 Conclusión
-
-- Random Forest fue el **puente entre estadística y aprendizaje automático**.  
-- Permitió aplicar IA de forma **robusta, interpretable y práctica** en finanzas.  
-- Hoy es la **base conceptual** de la IA moderna usada en derivados, riesgo y portafolios.
-
-> “Los datos no solo informan los modelos financieros, los **enseñan**.”  
+| Función | Expresión | Propósito |
+|----------|------------|------------|
+| ReLU | f(x) = max(0, x) | Evita saturación y acelera el entrenamiento |
+| Sigmoid | f(x) = 1 / (1 + e^{-x}) | Mapear entre 0 y 1 |
+| Tanh | f(x) = tanh(x) | Centra los valores entre -1 y 1 |
 
 
 ---
 
-# 📚 Lecturas sugeridas
+# 3. Aplicación financiera: predicción de volatilidad
 
-- **Breiman, L. (2001)** — *Random Forests*. Machine Learning.  
-- **Gu, Kelly & Xiu (2020)** — *Empirical Asset Pricing via Machine Learning*. *RFS*.  
-- **Hull (2022)** — *Machine Learning in Business and Finance*.  
-- **Raschka (2023)** — *Machine Learning with PyTorch and Scikit-Learn*.  
+La **volatilidad** mide la incertidumbre del mercado.  
+En finanzas, es la base de:
+- Valoración de opciones (modelo de Black–Scholes)  
+- Evaluación de riesgo (VaR, Expected Shortfall)  
+- Estrategias de cobertura (hedging)
 
 ---
 
-# 🏁 Fin de la presentación
+# Motivación
 
-¡Gracias por tu atención!
+Los modelos tradicionales (GARCH) describen la varianza condicional,  
+pero **no captan bien las no linealidades ni los cambios de régimen**.
 
-**Herramientas:** yfinance + scikit-learn + matplotlib  
+Las redes neuronales:
+- Aprenden directamente de los datos.  
+- Detectan relaciones no lineales.  
+- Capturan memoria temporal mediante arquitecturas como **LSTM**.
+
+---
+
+# 4. Implementación práctica
+
+**Objetivo:**  
+Predecir la volatilidad anualizada del Bitcoin (BTC-USD)  
+a partir de sus rendimientos y volatilidad pasada.
+
+---
+
+
+🐍 🐍 🐍 🐍
+=
+
+## Ahora vayamos a python.
+
+
+
 
 
 
