@@ -2,8 +2,8 @@
 marp: true
 theme: sparta
 paginate: true
-title: Fundamentos de Inteligencia Artificial en Finanzas
-description: Clase magistral — Redes Neuronales y LSTM aplicadas a la predicción de volatilidad
+title: Viernes de código
+description: Redes Neuronales y LSTM aplicadas a la predicción de volatilidad
 size: 16:9
 math: mathjax
 ---
